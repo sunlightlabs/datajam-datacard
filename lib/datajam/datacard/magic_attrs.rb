@@ -16,7 +16,7 @@ module Datajam
       def define_magic_attr(name)
         define_method name do |*attrs|
           raise ArgumentError.new("wrong number of arguments") if attrs.size > 1
-          instance_variable_set("@#{name}", attrs.first) if attrs.size == 1
+          send("#{name}=", attrs.first) if attrs.size == 1
           instance_variable_get("@#{name}")
         end
 
