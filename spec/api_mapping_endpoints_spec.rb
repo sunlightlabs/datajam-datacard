@@ -45,6 +45,10 @@ describe Datajam::Datacard::APIMapping do
     it "should be registered correctly" do
       subject.get :biff, "Biff Tannen" do
         param :greeting, "Greeting", :type => :text, :placeholder => "Hello Biff!"
+        param :another do
+          title "Another one"
+          type  :select, :options => (1..5).to_a
+        end
       end
       subject.endpoints[:biff].tap do |biff|
         biff.params.should have_key(:greeting)
@@ -53,6 +57,11 @@ describe Datajam::Datacard::APIMapping do
           greeting.title.should == "Greeting"
           greeting.type.should == :text
           greeting.placeholder.should == "Hello Biff!"
+        end
+        biff.params.should have_key(:another)
+        biff.params[:another].tap do |another|
+          another.type.should == :select
+          another.options.should == (1..5).to_a
         end
       end
     end

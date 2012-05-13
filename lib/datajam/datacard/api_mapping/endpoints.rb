@@ -16,6 +16,16 @@ module Datajam
         # block   - An optional block that can be used to customize endpoint
         #           behavior or attributes.
         #
+        # Examples
+        #
+        #   endpoint :contributions, "Campaign contributions" do
+        #     uri "contributions.json"
+        #
+        #     param :amount, "Contribution count", :placeholder => 500
+        #     param :organization_ft, "Organization"
+        #     # ...
+        #   end
+        #
         # Returns new endpoint definition.
         def endpoint(name, title = nil, options = {}, &block)
           endpoints[name] = EndpointEntry.new(name, title, options, &block)

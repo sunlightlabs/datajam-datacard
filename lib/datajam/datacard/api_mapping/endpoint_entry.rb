@@ -19,6 +19,15 @@ module Datajam
         # block   - An optional block that can be used to customize param's
         #           behavior or attributes.
         #
+        # Examples
+        #
+        #   param :amount, "Contribution count", :placeholder => 500
+        #   param :cycle do
+        #     name "Election cycle"
+        #     help_text "The year of the election cycle to get results for"
+        #     type :select, :options => (1990..Time.now.year).step(2).to_a
+        #   end
+        #
         # Returns new param definition.
         def param(name, title = nil, options = {}, &block)
           params[name] = Field.new(name, title, options, &block)

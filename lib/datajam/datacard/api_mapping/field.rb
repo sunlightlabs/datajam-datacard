@@ -9,6 +9,17 @@ module Datajam
         attr_magic :placeholder
         attr_magic :validate
         attr_magic :options
+
+        # Public: Extended setter for type value. It also accepts second
+        # parameter - a hash with options which will be merged to existing
+        # definition options.
+        def type(*args)
+          args_s = args.size
+          raise ArgumentError.new("wrong number of arguments") if args_s > 2
+          args.last.each { |key,val| send("#{key}=", val) } if args_s == 2
+          @type = args.first if args_s > 0
+          @type
+        end
       end
     end
   end
