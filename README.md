@@ -17,12 +17,19 @@ Or simply add it to your `Gemfile`:
 To start working on a project clone the repo and bundle all the dependencies:
 
     $ git clone git://github.com/sunlightlabs/datajam-datacard.git
+    $ git submodule init && git submodule update
     $ cd datajam-datacard
     $ bundle install
     
 Unit tests run with `spec` rake task (which is default):
 
     $ rake spec
+    
+Original [datajam](https://github.com/sunlightlabs/datajam) app is used for
+testing and it's submoduled in `spec/datajam`. You can run it normally with
+`rackup` command:
+
+    $ bundle exec rackup -p 3000
     
 ## Development guidelines
 
