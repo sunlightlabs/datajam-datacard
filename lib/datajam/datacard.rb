@@ -17,7 +17,7 @@ module Datajam
     end
 
     def self.installed?
-      Datajam::Settings[:datajam_datacard].any?
-    end  
+      true
+    end
   end
 end
