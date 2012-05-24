@@ -1,6 +1,4 @@
-class ExampleMapping
-  include Datajam::Datacard::APIMapping
-
+class ExampleMapping < Datajam::Datacard::APIMapping::Base
   name        "Example mapping"
   version     "1.0"
   authors     "Chris Kowalik"

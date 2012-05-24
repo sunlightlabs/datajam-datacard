@@ -1,5 +1,12 @@
+require 'datajam/datacard/mappings'
+
 module Datajam
   module Datacard
+    # Returns list of registered mappings
+    def self.mappings
+      @mappings ||= Mappings.new
+    end
+
     module APIMapping
       require 'datajam/datacard/api_mapping/errors'
       require 'datajam/datacard/api_mapping/definition'
@@ -10,13 +17,26 @@ module Datajam
       require 'datajam/datacard/api_mapping/endpoints'
       require 'datajam/datacard/api_mapping/request'
       require 'datajam/datacard/api_mapping/defaults'
-      
-      def self.included(base)
-        base.send :extend, MetadataAttributes
-        base.send :extend, Settings
-        base.send :extend, Endpoints
-        base.send :extend, Request
-        base.send :extend, Defaults
+
+      # Base class for API mappings, which provides full stack DSL
+      # to describe configuration and endpoints.
+      #
+      # Check `lib/datajam/datacard/mappings/*.rb` files to see examples.  
+      class Base
+        extend MetadataAttributes
+        extend Settings
+        extend Endpoints
+        extend Request
+        extend Defaults
+
+        # Callback executed when new mapping inherits after Base.
+        # It registers given component in mappings list.
+        #
+        # component - A mapping to be reigstered.
+        #
+        def self.inherited(component)
+          Datajam::Datacard.mappings << component
+        end
       end
     end
   end

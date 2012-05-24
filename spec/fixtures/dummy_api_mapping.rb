@@ -1,6 +1,4 @@
-class DummyAPIMapping
-  include Datajam::Datacard::APIMapping
-
+class DummyAPIMapping < Datajam::Datacard::APIMapping::Base
   name        "Dummy"
   version     "1.0"
   authors     "Marty MacFly"

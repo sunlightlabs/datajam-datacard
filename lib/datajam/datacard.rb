@@ -4,6 +4,8 @@ require "datajam/datacard/magic_attrs"
 require "datajam/datacard/api_mapping"
 require "datajam/datacard/engine"
 
+require "datajam/mappings/example"
+
 module Datajam
   module Datacard
     mattr_accessor :app_root

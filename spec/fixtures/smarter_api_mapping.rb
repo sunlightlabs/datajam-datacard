@@ -1,6 +1,4 @@
-class SmarterAPIMapping
-  include Datajam::Datacard::APIMapping
-
+class SmarterAPIMapping < Datajam::Datacard::APIMapping::Base
   name        "Smarter"
   version     "1.0"
   authors     "Marty MacFly"

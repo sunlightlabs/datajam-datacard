@@ -11,7 +11,7 @@ module Datajam
         #
         # Examples
         #
-        #   def http_setup(conn)
+        #   def self.http_setup(conn)
         #     conn.use Faraday::Request::UrlEncoded
         #     conn.use Faraday::Response::DecodeJSON
         #
