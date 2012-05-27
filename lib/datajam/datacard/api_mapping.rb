@@ -2,11 +2,6 @@ require 'datajam/datacard/mappings'
 
 module Datajam
   module Datacard
-    # Returns list of registered mappings
-    def self.mappings
-      @mappings ||= Mappings.new
-    end
-
     module APIMapping
       require 'datajam/datacard/api_mapping/errors'
       require 'datajam/datacard/api_mapping/definition'
@@ -23,6 +18,10 @@ module Datajam
       #
       # Check `lib/datajam/datacard/mappings/*.rb` files to see examples.  
       class Base
+        class << self
+          alias_method :id, :name
+        end
+
         extend MetadataAttributes
         extend Settings
         extend Endpoints

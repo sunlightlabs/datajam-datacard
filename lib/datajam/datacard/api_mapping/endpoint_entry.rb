@@ -5,7 +5,7 @@ module Datajam
       class EndpointEntry < Definition
         attr_magic :uri
         attr_magic :http_verb
-        
+
         # Public: Returns all defined params.
         def params
           @params ||= {}

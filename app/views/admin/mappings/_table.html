@@ -1,6 +1,6 @@
 <%= table_for @mappings, ["Name", "Description", "Version", "Authors", "Homepage"] do |mapping| %>
 <tr>
-  <td><%= link_to mapping.name, "#"%></td>
+  <td><%= link_to mapping.name, admin_mapping_path(mapping.id) %></td>
   <td><%= mapping.summary %></td>
   <td><%= mapping.version %></td>
   <td><%= link_to mapping.authors, "mailto:#{mapping.email}" %></td>

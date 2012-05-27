@@ -1,0 +1,17 @@
+<h2><%= @mapping.name %> &rsaquo; <%= @endpoint.title %> &rsaquo; New Request</h2>
+
+<%= simple_form_for :request, html: { class: "form-horizontal" } do |f| %>
+  <h3>Settings</h3>
+  <div class="settings">
+    <% @mapping.settings.values.each do |setting| %>
+      <%= mapping_field_for f, setting %>
+    <% end %>
+  </div>
+  
+  <h3>Parameters</h3>
+  <div class="params">
+    <% @endpoint.params.values.each do |param| %>
+      <%= mapping_field_for f, param %>
+    <% end %>
+  </div>
+<% end %>

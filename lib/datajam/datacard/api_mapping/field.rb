@@ -9,6 +9,7 @@ module Datajam
         attr_magic :placeholder
         attr_magic :validate
         attr_magic :options
+        attr_magic :prompt
 
         # Public: Extended setter for type value. It also accepts second
         # parameter - a hash with options which will be merged to existing

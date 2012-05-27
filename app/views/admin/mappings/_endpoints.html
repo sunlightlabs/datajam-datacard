@@ -1,0 +1,8 @@
+<%= table_for @mapping.endpoints.values, ["Name", "Title", "Path", ""] do |endpoint| %>
+<tr>
+  <td><%= endpoint.name %></td>
+  <td><%= endpoint.title %></td>
+  <td><%= endpoint.uri %></td>
+  <td><%= button_to "Request", new_admin_mapping_request_path(@mapping.id, endpoint.name), class: "btn btn-small", method: "get" %></td>
+</tr>
+<% end -%>

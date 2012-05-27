@@ -28,7 +28,7 @@ module Datajam
         #
         # Returns new endpoint definition.
         def endpoint(name, title = nil, options = {}, &block)
-          endpoints[name] = EndpointEntry.new(name, title, options, &block)
+          endpoints[name.to_sym] = EndpointEntry.new(name, title, options, &block)
         end
 
         # Shorthands for defining endpoints with access via various HTTP
