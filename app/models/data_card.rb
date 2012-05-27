@@ -19,7 +19,7 @@ class DataCard
 
   validates_presence_of :title
 
-  before_save :parse_csv
+  before_save :read_and_parse_csv
   after_save :save_events
   after_destroy :save_events
 
@@ -72,12 +72,18 @@ class DataCard
 
   protected
 
-  def parse_csv
-    return if csv.blank?
+  def read_and_parse_csv
+    return if csv_file.blank?
+    self.csv = csv_file.read
+    parse_csv
+  end
 
+  def parse_csv
     parsed = CSV.parse(self.csv)
     self.table_head = parsed.first
     self.table_body = parsed.slice(1, parsed.length)
+  rescue CSV::MalformedCSVError => err
+    errors[:csv_file] << "Invalid CSV file: #{err.message}"
   end
 
   def save_events

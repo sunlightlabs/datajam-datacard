@@ -21,10 +21,6 @@ class Admin::CardsController < AdminController
   def create
     @card = DataCard.new(params[:card])
 
-    if params[:card][:csv_file].present?
-      @card.csv = File.open(params[:card][:csv_file].tempfile.path).read
-    end
-
     if @card.save
       flash[:success] = "Card saved."
       redirect_to admin_cards_path
@@ -37,10 +33,6 @@ class Admin::CardsController < AdminController
   def update
     @card = DataCard.find(params[:id])
     
-    if params[:card][:csv_file].present?
-      params[:card].merge!({:csv => File.open(params[:card][:csv_file].tempfile.path).read})
-    end
-
     if @card.update_attributes(params[:card])
       flash[:success] = "Card updated."
       redirect_to edit_admin_card_path(@card)
