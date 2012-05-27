@@ -15,7 +15,8 @@ module Datajam
         Datajam.navigation << {
           title: 'Datacard',
           items: [
-            { title: 'API Mappings', url: '/admin/mappings', icon: 'list-alt' }
+            { title: 'Data Cards', url: '/admin/cards', icon: 'list' },
+            { title: 'API Mappings', url: '/admin/mappings', icon: 'list-alt' },
           ]
         }
       end
