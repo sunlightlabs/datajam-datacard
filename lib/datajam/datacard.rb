@@ -5,7 +5,7 @@ require "datajam/datacard/magic_attrs"
 require "datajam/datacard/api_mapping"
 require "datajam/datacard/engine"
 
-require "datajam/mappings/example"
+require "datajam/mappings/influence_explorer"
 
 module Datajam
   module Datacard
