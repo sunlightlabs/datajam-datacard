@@ -7,6 +7,15 @@ class Admin::MappingRequestsController < AdminController
   end
 
   def create
+    @response = @mapping.request(@endpoint.name, params[:request]) || {}
+
+    if @response.status >= 400
+      flash[:error] = @response.body
+      render 'new'
+    else
+      # FIXME: handle it
+      render :inline => @response.inspect
+    end
   end
 
   private
