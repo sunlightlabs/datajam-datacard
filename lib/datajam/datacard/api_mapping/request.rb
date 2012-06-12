@@ -17,6 +17,8 @@ module Datajam
           endpoint = endpoints[endpoint_name] 
           raise EndpointNotFoundError.new(endpoint_name) unless endpoint
 
+          params.reject! { |k,v| v.to_s.empty? }
+
           conn, verb = new_conn(endpoint), endpoint.http_verb.downcase
           conn.send(verb, File.join(parsed_base_uri.path, endpoint.uri), params)
         end
@@ -31,7 +33,6 @@ module Datajam
         # Returns configured connection.
         def new_conn(endpoint)
           Faraday.new(:url => parsed_base_uri.to_s) do |conn|
-            conn.use Faraday::Adapter::NetHttp
             conn.adapter :net_http
             http_setup(conn)
           end

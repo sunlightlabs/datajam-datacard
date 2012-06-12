@@ -1,3 +1,6 @@
+require 'faraday/response/json_decoded'
+require 'faraday/response/csv_translated'
+
 class InfluenceExplorerMapping < Datajam::Datacard::APIMapping::Base
   name        "Influence Explorer"
   version     "1.0"
@@ -8,7 +11,7 @@ class InfluenceExplorerMapping < Datajam::Datacard::APIMapping::Base
   description "..."
   base_uri    "http://transparencydata.com/api/1.0/"
 
-  setting :api_key, "API Key", :type => :string
+  setting :apikey, "API Key", :type => :string
 
   get :contributions, "Campaign contributions" do
     uri "/contributions.json"
@@ -22,6 +25,7 @@ class InfluenceExplorerMapping < Datajam::Datacard::APIMapping::Base
     param :cycle, "Election cycle" do
       help_text "The year of the election cycle to get results for"
       type :select, :options => (1990..Time.now.year).step(2).to_a
+      prompt "Select cycle"
     end
 
     param :date, "Contribution date" do
@@ -43,6 +47,7 @@ class InfluenceExplorerMapping < Datajam::Datacard::APIMapping::Base
         "state:lower" => "Lower chamber of state legislature",
         "state:governor" => "State governor"
       }
+      prompt "Select type of the office"
     end
 
     param :transaction_namespace, "Transaction namespace" do
@@ -51,13 +56,13 @@ class InfluenceExplorerMapping < Datajam::Datacard::APIMapping::Base
         "urn:fec:transaction" => "Federal contributions",
         "urn:nimsp:transaction" => "State contributions"
       }
+      prompt "Select type of the contribution"
     end
   end
 
-  protected
-
-  def http_setup(conn)
-    conn.use Faraday::Request::UrlEncoded
-    conn.request :url_encoded
+  def self.http_setup(conn)
+    conn.request  :url_encoded
+    conn.response :csv_translated
+    conn.response :json_decoded
   end
 end

@@ -14,7 +14,7 @@ class Admin::MappingRequestsController < AdminController
       render 'new'
     else
       # FIXME: handle it
-      render :inline => @response.inspect
+      render :inline => @response.env[:csv].inspect
     end
   end
 

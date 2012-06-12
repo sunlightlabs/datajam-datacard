@@ -25,7 +25,7 @@ describe Datajam::Datacard::APIMapping do
         params = { :author => 'Marty', :greetings => 'Sup Doc!' }
 
         Faraday::Connection.any_instance.expects(:get)
-          .with('/hello.json', params)
+          .with('/api/2.0/hello.json', params)
           .returns('ok')
 
         res = subject.request(:hello, params)
