@@ -11,11 +11,13 @@ class Admin::MappingRequestsController < AdminController
 
     if @response.status >= 400
       flash[:error] = @response.body
-      render 'new'
+    elsif @preview_data = @response.env[:csv] and !@preview_data.rows.empty?
+      return
     else
-      # FIXME: handle it
-      render :inline => @response.env[:csv].inspect
+      flash[:error] = "Couldn't parse the response or returned table was empty"
     end
+
+    render 'new'
   end
 
   private

@@ -1,5 +1,13 @@
 require 'faraday'
 
+class CsvPreview
+  attr_accessor :rows, :headers
+
+  def initialize
+    @rows, @headers = [], []
+  end
+end
+
 module Faraday
   # Public: Faraday's middleware which translates decoded response 
   # body into a cvs table.
@@ -15,19 +23,15 @@ module Faraday
     private
 
     def translate_data_to_csv(data)
-      columns = {}
-      row_num = 0
+      csv = CsvPreview.new
+      data.each { |row| csv.headers |= row.keys }
+      csv.headers.sort!
 
       data.each do |row|
-        row.keys.sort.each do |k|
-          columns[k] ||= []
-          columns[k][row_num] = row[k]
-        end
-
-        row_num += 1
+        csv.rows << csv.headers.inject([]) { |vals,h| vals << row[h] }
       end
 
-      columns
+      csv
     end
   end
 end
