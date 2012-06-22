@@ -26,7 +26,7 @@ class Admin::CardsController < AdminController
       redirect_to admin_cards_path
     else
       flash[:error] = @card.errors.full_messages.to_sentence
-      redirect_to admin_cards_path
+      render 'new'
     end
   end
 

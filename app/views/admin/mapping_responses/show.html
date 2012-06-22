@@ -1,14 +1,22 @@
-<h2>Results preview table</h2>
+<h2>New data card (preview table)</h2>
 <div class="tab-content">
-  <%= form_tag "" do %>
+  <div class="well">
+    <p>Please, make your selection of the fields to include in new data card.</p>
+  </div>
+
+  <% form_url = new_admin_mapping_response_card_path(params[:mapping_id], @mapping_response.id) %>
+  <%= simple_form_for @card, :url => form_url, :html => { :method => :get } do |f| %>
   <div class="tab-pane active" id="index">
-    <%= table_for @preview_data.rows, @preview_data.headers do |row| %>
+    <%= table_for @preview_data.rows, checkboxed_headers_list(f, @preview_data.headers) do |row| %>
     <tr>
       <% row.each do |value| %>
         <td><%= value %></td>
       <% end %>
     </tr>
     <% end %>
+  </div>
+  <div class="form-actions">
+    <%= f.button :submit, class: "btn-primary" %>
   </div>
   <% end %>
 </div>

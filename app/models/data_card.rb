@@ -17,9 +17,13 @@ class DataCard
   field :source,      type: String
   field :body,        type: String
 
+  attr_accessor :response_fields
+  attr_accessor :response
+
   validates_presence_of :title
 
   before_save :read_and_parse_csv
+  before_create :read_from_response
   after_save :save_events
   after_destroy :save_events
 
@@ -88,5 +92,13 @@ class DataCard
 
   def save_events
     Event.all.each(&:save)
+  end
+
+  def read_from_response
+    return if response.nil?
+    self.table_head = response_fields
+    indexes = response_fields.map { |head| response.data.headers.index(head) }
+    body = response.data.rows.map { |row| indexes.map { |i| row[i] } }
+    self.table_body = body.flatten
   end
 end
