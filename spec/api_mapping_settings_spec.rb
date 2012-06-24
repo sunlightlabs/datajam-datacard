@@ -30,4 +30,10 @@ describe Datajam::Datacard::APIMapping do
       end
     end
   end
+
+  describe "persistend_settings" do
+    it "returns object for settings stored in the database" do
+      subject.persisted_settings.should be_kind_of(MappingSettings)
+    end
+  end
 end

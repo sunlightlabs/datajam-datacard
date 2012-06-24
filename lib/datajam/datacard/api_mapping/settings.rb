@@ -29,6 +29,21 @@ module Datajam
         def setting(name, title = nil, options = {}, &block)
           settings[name] = Field.new(name, title, options, &block)
         end
+
+        # Public: Returns settings persisted in the system.
+        def persisted_settings
+          @persisted_settings ||= load_settings or create_empty_settings
+        end
+
+        private
+
+        def load_settings
+          MappingSettings.where(mapping_id: self.id).first
+        end
+
+        def create_empty_settings
+          MappingSettings.create(mapping_id: self.id)
+        end
       end
     end
   end

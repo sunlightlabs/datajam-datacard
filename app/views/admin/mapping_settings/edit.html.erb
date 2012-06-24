@@ -1,0 +1,16 @@
+<h2><%= @mapping.name %> &rsaquo; Settings</h2>
+
+<%= simple_form_for @mapping_settings, method: :put, url: admin_mapping_settings_path(@mapping.id), html: { class: "form-horizontal" } do |f| %>
+  <h3>Settings</h3>
+  <div class="settings">
+    <%= f.fields_for :settings do |sf| %>
+      <% @mapping.settings.values.each do |setting| %>
+        <%= mapping_field_for sf, setting, @mapping_settings.settings[setting.name.to_s] %>
+      <% end %>
+    <% end %>
+  </div>
+  
+  <div class="form-actions">
+    <%= f.button :submit, value: "Save settings", class: "btn-primary" %>
+  </div>
+<% end %>

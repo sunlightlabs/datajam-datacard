@@ -1,5 +1,5 @@
 module Admin::MappingRequestsHelper
-  def mapping_field_for(form, field)
+  def mapping_field_for(form, field, value=nil)
     options = field.options
     options = options.invert if options.respond_to?(:invert)
     
@@ -10,6 +10,7 @@ module Admin::MappingRequestsHelper
       collection:  options,
       placeholder: field.placeholder,
       prompt:      field.prompt,
+      input_html:  { value: value },
     }
   end
 end

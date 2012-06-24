@@ -1,14 +1,12 @@
 <h2><%= @mapping.name %> &rsaquo; <%= @endpoint.title %> &rsaquo; New Datacard</h2>
 
 <%= simple_form_for :request, method: :post, url: admin_mapping_requests_path(@mapping.id, @endpoint.name), html: { class: "form-horizontal" } do |f| %>
-  <h3>Settings</h3>
-  <div class="settings">
+  <div class="settings" style="display: none">
     <% @mapping.settings.values.each do |setting| %>
-      <%= mapping_field_for f, setting %>
+      <%= f.hidden_field setting.name, value: @mapping.persisted_settings.settings[setting.name.to_s] %>
     <% end %>
   </div>
   
-  <h3>Parameters</h3>
   <div class="params">
     <% @endpoint.params.values.each do |param| %>
       <%= mapping_field_for f, param %>
