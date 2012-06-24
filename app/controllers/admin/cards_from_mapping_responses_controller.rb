@@ -1,5 +1,4 @@
 class Admin::CardsFromMappingResponsesController < AdminController
-
   before_filter :find_mapping_response
 
   def new
@@ -25,5 +24,4 @@ class Admin::CardsFromMappingResponsesController < AdminController
   def find_mapping_response
     @mapping_response = MappingResponse.find(params[:response_id])
   end
-
 end

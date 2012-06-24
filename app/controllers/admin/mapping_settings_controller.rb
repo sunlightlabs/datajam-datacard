@@ -1,4 +1,4 @@
-class Admin::MappingSettingsController < AdminController
+class Admin::MappingSettingsController < Admin::MappingsBaseController
   before_filter :find_mapping
   before_filter :find_mapping_settings
 
@@ -16,11 +16,6 @@ class Admin::MappingSettingsController < AdminController
   end
 
   private
-
-  def find_mapping
-    @mapping = Datajam::Datacard.mappings.find_by_klass(params[:mapping_id])
-    raise ActionController::RoutingError.new("Not found") unless @mapping
-  end
 
   def find_mapping_settings
     @mapping_settings = @mapping.persisted_settings
