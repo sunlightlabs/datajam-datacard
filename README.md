@@ -1,6 +1,8 @@
 # Datacard
 
-Datacard engine for [Datajam](http://github.com/sunlightlabs/datajam).
+[![Build Status](https://secure.travis-ci.org/sunlightlabs/datajam-datacard.png)](http://travis-ci.org/sunlightlabs/datajam-datacard)
+
+Stats & data visualization engine for [Datajam](http://github.com/sunlightlabs/datajam).
 
 ## Installation
 
