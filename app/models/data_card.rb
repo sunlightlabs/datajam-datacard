@@ -22,7 +22,8 @@ class DataCard
 
   validates_presence_of :title
 
-  before_save :read_and_parse_csv
+  before_save :read_uploaded_csv
+  before_save :parse_csv
   before_create :read_from_response
   after_save :save_events
   after_destroy :save_events
@@ -76,13 +77,13 @@ class DataCard
 
   protected
 
-  def read_and_parse_csv
+  def read_uploaded_csv
     return if csv_file.blank?
     self.csv = csv_file.read
-    parse_csv
   end
 
   def parse_csv
+    return if csv.to_s.blank?
     parsed = CSV.parse(self.csv)
     self.table_head = parsed.first
     self.table_body = parsed.slice(1, parsed.length)
