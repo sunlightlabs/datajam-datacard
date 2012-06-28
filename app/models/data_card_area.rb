@@ -23,9 +23,12 @@ class DataCardArea < ContentArea
   end
 
   def render
+    "<div class=\"liveCard\" id=\"content_area_#{self.id}\">#{render_update}</div>"
+  end
+
+  def render_update
     r = "<h2>Card Not Yet Selected</h2>"
     r = self.current_card.render if self.current_card
-    "<div class=\"liveCard\" id=\"content_area_#{self.id}\">#{r}</div>"
   end
 
 end
