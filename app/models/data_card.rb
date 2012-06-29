@@ -44,7 +44,7 @@ class DataCard
 
     return <<-TMPL.strip_heredoc
     <div id="liveCard">
-    <h2>{{ title }}</h2>
+    <h3>{{ title }}</h3>
     <table class="table table-striped">
 
       <thead>
