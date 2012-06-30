@@ -100,6 +100,6 @@ class DataCard
     self.table_head = response_fields
     indexes = response_fields.map { |head| response.data.headers.index(head) }
     body = response.data.rows.map { |row| indexes.map { |i| row[i] } }
-    self.table_body = body.flatten
+    self.table_body = body
   end
 end
