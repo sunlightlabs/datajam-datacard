@@ -2,9 +2,9 @@
 require File.expand_path('../lib/datajam/datacard/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Sunlightlabs", "Chris Kowalik"]
+  gem.authors       = ["Sunlight Labs", "Chris Kowalik"]
   gem.email         = ["chris@nu7hat.ch"]
-  gem.description   = %q{Datacard engine for Datajam}
+  gem.description   = File.open(File.expand_path("../README.md", __FILE__)).read rescue nil
   gem.summary       = %q{Datacard engine for Datajam}
   gem.homepage      = "http://datajam.org"
   gem.files         = `git ls-files`.split($\)
