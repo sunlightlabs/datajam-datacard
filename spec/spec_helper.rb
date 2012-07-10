@@ -8,5 +8,6 @@ RSpec.configure do |conf|
 
   conf.before(:suite) do
     load File.expand_path('../datajam/db/seeds.rb', __FILE__)
+    Datajam::Datacard::Engine.load_seed
   end
 end
