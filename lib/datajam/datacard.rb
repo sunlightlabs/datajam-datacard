@@ -1,6 +1,7 @@
 require "active_support/dependencies"
 
 require "datajam/datacard/core_ext/array"
+require "datajam/datacard/core_ext/object"
 require "datajam/datacard/version"
 require "datajam/datacard/magic_attrs"
 require "datajam/datacard/api_mapping"

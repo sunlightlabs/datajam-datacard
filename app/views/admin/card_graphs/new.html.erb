@@ -1,0 +1,10 @@
+<h2>New Graph</h2>
+<%= simple_form_for [:admin, @graph], html: { class: "form-horizontal" } do |f| %>
+
+  <%= f.input :group_by, as: :select, collection: graph_group_by_options_for(@card), prompt: "Select column...", label: "Group by (X axis)" %>
+  <%= f.input :series, as: :select, collection: graph_group_by_options_for(@card), input_html: { multiple: true }, label: "Series (Y axis)" %>
+  
+  <div class="form-actions">
+    <%= f.button :submit, value: "Generate graph", class: "btn-primary" %>
+  </div>
+<% end %>

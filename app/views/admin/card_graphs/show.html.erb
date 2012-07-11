@@ -1,0 +1,11 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "d3" %>
+  <%= javascript_include_tag "d3.v2.min.js", "nv.d3.min.js" %>
+<% end %>
+
+<div id="chart"><svg style="height: 400px"></svg></div>
+
+<%= javascript_tag do %>
+  var chartData = <%= raw @graph.cached_data.to_json %>;
+<% end %>
+<%= javascript_include_tag "data_card_graphing" %>

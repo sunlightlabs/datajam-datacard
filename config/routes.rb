@@ -6,7 +6,10 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :cards
+    resources :cards do
+      resources :graphs, :except => [:edit, :update], :controller => :card_graphs
+    end
+    
     resources :mappings, :only => [:index, :show] do
       resource :mapping_settings, :only => [:edit, :update], :as => 'settings', :path => 'settings'
       resources :mapping_requests, :only => [:new, :create], :path => ':endpoint_id/requests', :as => :requests
