@@ -17,6 +17,8 @@ class DataCard
   field :source,      type: String
   field :body,        type: String
 
+  has_many :graphs, class_name: "DataCardGraph", inverse_of: :card, dependent: :destroy 
+
   attr_accessor :response_fields
   attr_accessor :response
 
@@ -75,7 +77,33 @@ class DataCard
     TMPL
   end
 
+  def graph_data_for(group_by, series)
+    return if series.empty?
+    group_by_id = table_head.index(group_by.to_s) or return
+
+    data = series.map do |key|
+      serie_id = table_head.index(key.to_s) or next
+      values   = pick_values_for(serie_id, group_by_id)
+
+      { key: key, values: values }
+    end
+
+    data.compact!
+    data unless data.empty?
+  end
+
   protected
+
+  def pick_values_for(serie_id, group_by_id)
+    table_body.inject({}) do |res, row|
+      y = row[serie_id].to_f_if_possible
+      x = row[group_by_id].to_f_if_possible
+      
+      res[x] = 0 unless res[x]
+      res[x] += (y.is_a?(String) ? 1 : y)
+      res
+    end.map { |x,y| {x: x, y: y} }
+  end
 
   def read_uploaded_csv
     return if csv_file.blank?

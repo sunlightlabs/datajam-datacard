@@ -1,0 +1,9 @@
+<%= search_box(:title) %>
+<%= table_for @graphs, [:created_at, :group_by, :series] do |graph| %>
+  <tr>
+    <td><%= link_to graph.created_at.to_s(:humane), admin_card_graph_path(@card, graph) %></td>
+    <td><%= graph.group_by %></td>
+    <td><%= graph.series.join(', ') %></td>
+    <td><%= delete_button admin_card_graph_path(@card, graph), title: "This will completely destroy the card", confirm: "Are you sure? This will completely destroy the graph." %></td>
+  </tr>
+<% end %>
