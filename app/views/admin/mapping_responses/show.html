@@ -7,7 +7,7 @@
   <% form_url = new_admin_mapping_response_card_path(params[:mapping_id], @mapping_response.id) %>
   <%= simple_form_for @card, :url => form_url, :html => { :method => :get } do |f| %>
   <div class="tab-pane active" id="index">
-    <%= table_for @preview_data.rows, checkboxed_headers_list(f, @preview_data.headers) do |row| %>
+    <%= table_for @preview_data.rows[0..10], checkboxed_headers_list(f, @preview_data.headers) do |row| %>
     <tr>
       <% row.each do |value| %>
         <td><%= value %></td>

@@ -22,13 +22,30 @@ class DataCardArea < ContentArea
     end
   end
 
+  def render_head
+    renderer.render :partial => 'datajam/datacard/data_card_areas/head_assets'
+  end
+
+  def render_body
+    renderer.render :partial => 'datajam/datacard/data_card_areas/body_assets'
+  end
+
   def render
-    "<div class=\"liveCard\" id=\"content_area_#{self.id}\">#{render_update}</div>"
+    renderer.render(
+      :partial => 'datajam/datacard/data_card_areas/content',
+      :locals  => { :data_card => self }
+    )
   end
 
   def render_update
     r = "<h2>Card Not Yet Selected</h2>"
     r = self.current_card.render if self.current_card
+  end
+
+  private
+
+  def renderer
+    @@av ||= ActionView::Base.new(Datajam::Datacard::Engine.paths['app/views'].first)
   end
 
 end
