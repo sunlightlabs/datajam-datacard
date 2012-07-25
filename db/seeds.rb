@@ -1,3 +1,5 @@
+Setting.find_or_create_by(:namespace => 'datajam-datacard', :name => 'installed')
+
 event = Event.last
 data_card_1 = DataCard.find_or_create_by(
   title: 'Data Card 1',

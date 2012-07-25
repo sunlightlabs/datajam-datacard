@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  scope :module => :datajam do
-    scope :module => :datacard do
-      
+  scope :module => 'datajam/datacard' do
+    scope '/admin/plugins/datajam-datacard' do
+      get '/install' => 'plugin#install'
+      get '/uninstall' => 'plugin#uninstall'
+      get '/refresh_assets' => 'plugin#refresh_assets'
     end
   end
 

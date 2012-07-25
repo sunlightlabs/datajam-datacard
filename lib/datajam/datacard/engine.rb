@@ -13,8 +13,9 @@ module Datajam
 
       initializer "datajam_datacard.navigation" do
         Datajam.navigation << {
-          title: 'Datacard',
-          items: [
+          :if => proc { Datajam::Datacard.installed? },
+          :title => 'Datacard',
+          :items => [
             { title: 'Data Cards', url: '/admin/cards', icon: 'list' },
             { title: 'API Mappings', url: '/admin/mappings', icon: 'list-alt' },
           ]

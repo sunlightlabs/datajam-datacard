@@ -18,11 +18,11 @@ module Datajam
     end
 
     def self.install_required?
-      false
+      true
     end
 
     def self.installed?
-      true
+      Datajam::Settings[:'datajam-datacard'].any?
     end
   end
 end
