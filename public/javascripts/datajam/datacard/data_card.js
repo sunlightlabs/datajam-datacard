@@ -13,7 +13,7 @@ Datajam.DataCardUpdate = Backbone.Model.extend({
 Datajam.DataCardModal = Datajam.Modal.extend({
   template: function() {
     return Handlebars.compile($("script#data_card_modal_template").html());
-  },
+  }
 });
 
 Datajam.modalRenderers['data_card_area'] = function(contentArea) {
@@ -21,4 +21,4 @@ Datajam.modalRenderers['data_card_area'] = function(contentArea) {
   var modal = new Datajam.DataCardModal({ model: dataCardUpdate,
                                           id: contentArea.get('_id') });
   modal.render();
-}
+};
