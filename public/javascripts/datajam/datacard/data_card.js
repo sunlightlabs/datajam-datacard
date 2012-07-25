@@ -4,7 +4,6 @@ Datajam.DataCardUpdate = Backbone.Model.extend({
     var payload = { event_id: Datajam.event.get('_id'),
                     content_area_id: contentArea.get('_id'),
                     data: { current_card_id: $('#select-' + contentArea.get('_id') + ' option:selected').val() } };
-    console.log(payload);
     $.post('/onair/update', payload, function(response) {
       $('#modal-' + contentArea.get('_id')).modal('hide');
     }, 'json');
