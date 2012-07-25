@@ -3,6 +3,7 @@
 .bundle
 .config
 .hop
+.DS_Store
 coverage
 InstalledFiles
 lib/bundler/man
