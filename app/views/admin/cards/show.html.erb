@@ -1,9 +1,15 @@
 <h2><%= @card.title %> data card</h2>
 
-<ul class="nav nav-pills">
-  <li class="active"><%= link_to "Grid", admin_card_path(@card) %></li>
-  <li><%= link_to "Recent graphs", admin_card_graphs_path(@card) %></li>
-  <li><%= link_to "New graph", new_admin_card_graph_path(@card) %></li>
-</ul>
+<% if @card.body %>
+  <div class="well">
+    <%= raw @card.body %>
+  </div>
+<% else %>
+  <ul class="nav nav-pills">
+    <li class="active"><%= link_to "Grid", admin_card_path(@card) %></li>
+    <li><%= link_to "Recent graphs", admin_card_graphs_path(@card) %></li>
+    <li><%= link_to "New graph", new_admin_card_graph_path(@card) %></li>
+  </ul>
 
-<%= render partial: "grid" %>
+  <%= render partial: "grid" %>
+<% end %>

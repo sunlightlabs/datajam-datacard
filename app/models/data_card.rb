@@ -27,6 +27,7 @@ class DataCard
   before_save :read_uploaded_csv
   before_save :parse_csv
   before_create :read_from_response
+  before_create :write_csv_if_none
   after_save :save_events
   after_destroy :save_events
 
@@ -92,6 +93,16 @@ class DataCard
     data unless data.empty?
   end
 
+  def rebuild_table_data!
+    read_uploaded_csv
+    parse_csv
+
+    unless persisted?
+      read_from_response
+      write_csv_if_none
+    end
+  end
+
   protected
 
   def pick_values_for(serie_id, group_by_id)
@@ -129,5 +140,14 @@ class DataCard
     indexes = response_fields.map { |head| response.data.headers.index(head) }
     body = response.data.rows.map { |row| indexes.map { |i| row[i] } }
     self.table_body = body
+  end
+
+  def write_csv_if_none
+    return if self.csv or self.body
+
+    self.csv = CSV.generate({}) do |csv|
+      csv << self.table_head if self.table_head
+      self.table_body.each { |row| csv << row }
+    end.to_s
   end
 end

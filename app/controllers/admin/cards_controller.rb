@@ -20,6 +20,9 @@ class Admin::CardsController < AdminController
 
   def create
     @card = DataCard.new(params[:card])
+    
+    return if render_preview
+    render 'new' and return if params[:back]
 
     if @card.save
       flash[:success] = "Card saved."
@@ -32,13 +35,20 @@ class Admin::CardsController < AdminController
 
   def update
     @card = DataCard.find(params[:id])
+
+    return if render_preview
     
+    if params[:back]
+      @card.attributes = params[:card]
+      render 'edit' and return
+    end
+
     if @card.update_attributes(params[:card])
       flash[:success] = "Card updated."
       redirect_to edit_admin_card_path(@card)
     else
       flash[:error] = @card.errors.full_messages.to_sentence
-      redirect_to edit_admin_card_path(@card)
+      render 'edit'
     end
   end
 
@@ -52,4 +62,14 @@ class Admin::CardsController < AdminController
     redirect_to admin_cards_path
   end
 
+  private
+
+  def render_preview
+    if params[:preview]
+      @card.attributes = params[:card]
+      @card.rebuild_table_data!
+      render 'preview'
+      true
+    end
+  end
 end
