@@ -1,4 +1,5 @@
 class Admin::CardsController < AdminController
+  before_filter :load_mappings, :only => [:new, :create, :index]
 
   def index
     @cards = filter_and_sort DataCard.all.order(:updated_at => :desc)
@@ -71,5 +72,11 @@ class Admin::CardsController < AdminController
       render 'preview'
       true
     end
+  end
+
+  protected
+
+  def load_mappings
+    @mappings = Datajam::Datacard.mappings
   end
 end

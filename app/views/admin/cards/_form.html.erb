@@ -3,6 +3,7 @@
   <%= f.input :title %>
   <%= f.input :tag_string, input_html: { class: "taggable" } %>
 
+  <% if @card.csv || @card.new_record? %>
   <fieldset>
     <legend>Use the default template</legend>
 
@@ -10,12 +11,25 @@
     <%= f.input :csv, as: :text, label: "Or Enter Data", input_html: { class: "datajamTemplate rawData", rows: 10, cols: 100 } %>
     <%= f.input :source, as: :text, label: 'Source Attribution', input_html: { rows: 5, cols: 80 }, hint: "Can use HTML" %>
   </fieldset>
+  <% end %>
 
+  <% if @card.new_record? %>
+  <fieldset>
+    <legend>Use an API mapping</legend>
+
+    <ul class="mappings">
+      <%= render :partial => "mapping", :collection => @mappings %>
+    </ul>
+  </fieldset>
+  <% end %>
+
+  <% if @card.body || @card.new_record? %>
   <fieldset>
     <legend>Or use your own HTML</legend>
 
     <%= f.input :body, as: :text, label: "HTML for the data card", input_html: { class: "datajamTemplate", rows: 10, cols: 100 } %>
   </fieldset>
+  <% end %>
 
   <div class="form-actions">
     <%= f.button :submit, class: "btn-primary" %>
