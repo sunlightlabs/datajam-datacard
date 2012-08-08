@@ -4,6 +4,14 @@
   <script type="text/javascript" src="/static/javascripts/datajam/datacard/nv.d3.min.js"></script>
 <% end %>
 
+<h2>Graph for &quot;<%= @card.title %>&quot; datacard</h2>
+
+<ul class="nav nav-pills">
+  <li><%= link_to "Grid", admin_card_path(@card) %></li>
+  <li><%= link_to "Recent graphs", admin_card_graphs_path(@card) %></li>
+  <li><%= link_to "New graph", new_admin_card_graph_path(@card) %></li>
+</ul>
+
 <div id="chart"><svg style="height: 400px"></svg></div>
 
 <%= javascript_tag do %>
