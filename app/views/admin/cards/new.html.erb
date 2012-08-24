@@ -1,2 +1,39 @@
 <h2>New Data Card</h2>
-<%= render "form" %>
+
+<div id="yield"></div>
+
+<% content_for :javascript do %>
+  <%= javascript_include_tag "/javascripts/datajam/datacard/new_data_card_app.js" %>
+<% end %>
+
+<script type="text/html" id="datacard_type_choice_tpl">
+  <ul class="datacard-type-choice">
+    <li class="datacard-from-own-data">
+      <a href="/admin/cards/new/#!default" id="do_datacard_from_own_data">
+        <h3>Enter your data</h3>
+        <p>Use your own data with default template.</p>
+      </a>
+    </li>
+    <li class="datacard-from-csv-file">
+      <a href="/admin/cards/new/#!from-csv" id="do_datacard_from_csv_file">
+        <h3>Upload CSV</h3>
+        <p>Use an uploaded data file with default template.</p>
+      </a>
+    </li>
+    <li class="datacard-from-api-mapping">
+      <a href="/admin/cards/new/#!from-mapping" id="do_datacard_from_api_mapping">
+        <h3>From API mapping</h3>
+        <p>Use provided mapping to retrieve data.</p>
+      </a>
+    </li>
+    <li class="datacard-from-own-html">
+      <a href="/admin/cards/new/#!from-html" id="do_datacard_from_own_html">
+        <h3>From your own HTML</h3>
+        <p>Use your own document describing data.</p>
+      </a>
+    </li>
+  </ul>
+
+  <div id="new_data_card_form">
+  </div>
+</script>

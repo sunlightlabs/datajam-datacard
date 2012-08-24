@@ -63,6 +63,11 @@ class Admin::CardsController < AdminController
     redirect_to admin_cards_path
   end
 
+  def tpl
+    @card = DataCard.new(params[:card])
+    render "/admin/cards/_#{params[:template]}", :layout => false
+  end
+
   private
 
   def render_preview

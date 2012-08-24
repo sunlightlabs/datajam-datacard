@@ -7,6 +7,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get "/admin/cards/tpl/:template", :action => :tpl, :controller => "admin/cards"
+
   namespace :admin do
     resources :cards do
       resources :graphs, :except => [:edit, :update], :controller => :card_graphs

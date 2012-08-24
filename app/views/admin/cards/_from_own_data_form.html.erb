@@ -1,0 +1,15 @@
+<h3>From own data</h3>
+
+<%= simple_form_for [:admin, @card], html: { class: "form-horizontal" } do |f| %>
+
+  <%= f.input :title %>
+  <%= f.input :tag_string, input_html: { class: "taggable" } %>
+
+  <%= f.input :csv, as: :text, label: "Your data", input_html: { class: "datajamTemplate rawData", rows: 10, cols: 100 } %>
+  <%= f.input :source, as: :text, label: 'Source Attribution', input_html: { rows: 5, cols: 80 }, hint: "Can use HTML" %>
+
+  <div class="form-actions">
+    <%= f.button :submit, class: "btn-primary submit" %>
+    <%= button_tag "Preview", value: "1", name: "preview", class: "btn-small preview", target: "_blank" %>
+  </div>
+<% end %>
