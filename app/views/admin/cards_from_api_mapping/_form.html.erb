@@ -1,0 +1,7 @@
+<%= simple_form_for [:admin, @card], html: { class: "form-horizontal" } do |f| %>
+  <%= hidden_field_tag :type, "from_api_mapping" %>
+
+  <ul class="mappings">
+    <%= render partial: "admin/cards_from_api_mapping/mapping", :collection => @mappings %>
+  </ul>
+<% end %>

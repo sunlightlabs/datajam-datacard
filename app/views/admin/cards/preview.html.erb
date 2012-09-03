@@ -1,6 +1,8 @@
 <h2>Data Card Preview</h2>
 
 <%= simple_form_for [:admin, @card], html: { class: "form-horizontal" } do |f| %>
+  <%= hidden_field_tag :type, params[:type] %>
+
   <%= f.input :title, as: :hidden %>
   <%= f.input :tag_string, as: :hidden %>
   <%= f.input :csv, as: :hidden %>
@@ -14,6 +16,9 @@
 
 <% if @card.body %>
   <div class="well">
+    <% unless @card.title.to_s.empty? %>
+      <h1><%= @card.title %></h1>
+    <% end %>
     <%= raw @card.body %>
   </div>
 <% else %>

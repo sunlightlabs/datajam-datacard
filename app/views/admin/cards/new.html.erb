@@ -1,2 +1,7 @@
-<h2>New Data Card</h2>
-<%= render "form" %>
+<% if %w(from_own_data from_csv_file from_html).include?(params[:type]) %>
+  <%= render template: "admin/cards_#{params[:type]}/new" %>
+<% else %>
+  <h2>New Data Card</h2>
+
+  <%= render partial: 'type_choice' %>
+<% end %>

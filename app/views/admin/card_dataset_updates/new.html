@@ -1,0 +1,15 @@
+<h2>Update card's dataset</h2>
+
+<div class="tab-content">
+  <p class="alert alert-info">You can either update existing datacard or create new one based on original request.</p>
+
+  <% form_url = admin_card_dataset_updates_path(@card.id) %>
+  <%= simple_form_for @card, :url => form_url, :html => { :method => :post } do |f| %>
+  
+  <div class="form-actions">
+    <%= f.button :submit, 'Update existing datacard', class: "btn btn-warning", name: "force" %>
+    <%= f.button :submit, 'Create new datacard', class: "btn btn-primary" %>
+  </div>
+
+  <% end %>
+</div>

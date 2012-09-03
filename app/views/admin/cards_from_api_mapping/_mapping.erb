@@ -6,6 +6,6 @@
   <td><%= endpoint.name %></td>
   <td><%= endpoint.title %></td>
   <td><%= endpoint.uri %></td>
-  <td><%= link_to "Fetch Datacard", new_admin_mapping_request_path(mapping.id, endpoint.name), class: "btn btn-small", method: "get" %></td>
+  <td><%= link_to "Fetch Dataset", new_admin_mapping_request_path(mapping.id, endpoint.name), class: "btn btn-small", method: "get" %></td>
 </tr>
 <% end -%>

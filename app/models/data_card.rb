@@ -10,17 +10,16 @@ class DataCard
     ActiveModel::Name.new(self, nil, "Card")
   end
 
-  field :title,       type: String
-  field :table_head,  type: Array,     default: []
-  field :table_body,  type: Array,     default: []
-  field :csv,         type: String
-  field :source,      type: String
-  field :body,        type: String
-
-  has_many :graphs, class_name: "DataCardGraph", inverse_of: :card, dependent: :destroy 
-
-  attr_accessor :response_fields
-  attr_accessor :response
+  field :title,           type: String
+  field :table_head,      type: Array,     default: []
+  field :table_body,      type: Array,     default: []
+  field :csv,             type: String
+  field :source,          type: String
+  field :body,            type: String
+  field :response_fields, type: Array,     default: []
+ 
+  has_many   :graphs,   class_name: "DataCardGraph", inverse_of: :card, dependent: :destroy 
+  belongs_to :response, class_name: "MappingResponse", inverse_of: :cards
 
   validates_presence_of :title
 
@@ -76,6 +75,15 @@ class DataCard
     {{/if}}
     </div>
     TMPL
+  end
+
+  def recreate!
+    self.csv = ''
+    self.table_head = []
+    self.table_body = []
+    
+    read_from_response
+    write_csv_if_none
   end
 
   def graph_data_for(group_by, series)

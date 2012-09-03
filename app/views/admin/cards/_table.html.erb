@@ -4,6 +4,11 @@
     <td><%= link_to card.title, edit_admin_card_path(card) %></td>
     <td><%= card.updated_at.to_s :humane %></td>
     <td><%= button_to "Preview", admin_card_path(card), class: "btn btn-small", method: "get" %></td>
+    <td>
+      <% if card.response %>
+        <%= button_to "Update dataset", new_admin_card_dataset_update_path(card.id), class: "btn btn-primary", method: "get" %>
+      <% end %>
+    </td>
     <td><%= delete_button admin_card_path(card), title: "This will completely destroy the card", confirm: "Are you sure? This will completely destroy the card." %></td>
   </tr>
 <% end %>

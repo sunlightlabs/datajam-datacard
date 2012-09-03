@@ -7,16 +7,14 @@ class Admin::MappingRequestsController < Admin::MappingsBaseController
   end
 
   def create
-    @response = @mapping.request(@endpoint.name, params[:request]) || {}
-
-    if @response.status >= 400
-      flash[:error] = @response.body
-    elsif @preview_data = @response.env[:csv] and !@preview_data.rows.empty?
-      @mapping_response = MappingResponse.create(:data => @preview_data)
+    @mapping_request = MappingRequest.prepare(@mapping, @endpoint, params[:request] || {})
+    
+    begin
+      @mapping_response = @mapping_request.perform!
       redirect_to admin_mapping_response_path(params[:mapping_id], @mapping_response.id)
       return
-    else
-      flash[:error] = "Couldn't parse the response or returned table was empty"
+    rescue MappingRequest::Error => err
+      flash[:error] = err.to_s
     end
 
     render 'new'

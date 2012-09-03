@@ -11,6 +11,12 @@ Rails.application.routes.draw do
     resources :cards do
       resources :graphs, :except => [:edit, :update], :controller => :card_graphs
     end
+
+    resources :card_dataset_updates, :only => [:new, :create], :path => 'cards/:id/dataset_updates'
+    resources :cards_from_own_data, :only => [:new, :create], :path => 'cards/from_own_data'
+    resources :cards_from_csv_file, :only => [:new, :create], :path => 'cards/from_csv_file'
+    resources :cards_from_html, :only => [:new, :create], :path => 'cards/from_html'
+    resources :cards_from_api_mapping, :only => [:new, :create], :path => 'cards/from_api_mapping'
     
     resources :mappings, :only => [:index, :show] do
       resource :mapping_settings, :only => [:edit, :update], :as => 'settings', :path => 'settings'

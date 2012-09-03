@@ -1,15 +1,12 @@
 <h2>Data Cards</h2>
 
 <ul class="nav nav-pills">
-    <li class="active"><a href="#index" data-toggle="pill">List</a></li>
-    <li><a href="#new" data-toggle="pill">Create New</a></li>
+    <li class="active"><%= link_to "List", admin_cards_path %></li>
+    <li><%= link_to "Create New", new_admin_card_path %></li>
 </ul>
+
 <div class="tab-content">
     <div class="tab-pane active" id="index">
         <%= render :partial => 'admin/cards/table' %>
-    </div>
-    
-    <div class="tab-pane" id="new">
-        <%= render "form" %>
     </div>
 </div>
