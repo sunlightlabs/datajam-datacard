@@ -1,4 +1,9 @@
 class DataCardArea < ContentArea
+  include RendersTemplates
+
+  def self.modal_class
+    "Datajam.Datacard.views.Modal"
+  end
 
   field :data_cards, type: Array
   field :current_card_id, type: String
@@ -23,15 +28,15 @@ class DataCardArea < ContentArea
   end
 
   def render_head
-    renderer.render :partial => 'datajam/datacard/data_card_areas/head_assets'
+    render_to_string :partial => 'datajam/datacard/data_card_areas/head_assets'
   end
 
   def render_body
-    renderer.render :partial => 'datajam/datacard/data_card_areas/body_assets'
+    render_to_string :partial => 'datajam/datacard/data_card_areas/body_assets'
   end
 
   def render
-    renderer.render(
+    render_to_string(
       :partial => 'datajam/datacard/data_card_areas/content',
       :locals  => { :data_card => self }
     )
@@ -40,12 +45,6 @@ class DataCardArea < ContentArea
   def render_update
     r = "<h2>Card Not Yet Selected</h2>"
     r = self.current_card.render if self.current_card
-  end
-
-  private
-
-  def renderer
-    @@av ||= ActionView::Base.new(Datajam::Datacard::Engine.paths['app/views'].first)
   end
 
 end

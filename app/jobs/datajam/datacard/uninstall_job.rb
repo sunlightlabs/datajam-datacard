@@ -8,8 +8,10 @@ module Datajam
           filename = filepath.gsub("#{Datajam::Datacard::Engine.root}/public/", '')
           fs.delete(filename)
         end
-        # Remove DatacardArea instances from events
+        # Remove DataCardArea instances from events
         Event.all.each do |event|
+          event.content_areas.where(:area_type => 'data_card_area').destroy_all
+          # kill any legacy cards if they're there
           event.content_areas.where(:area_type => 'datacard_area').destroy_all
         end
         # Remove settings
