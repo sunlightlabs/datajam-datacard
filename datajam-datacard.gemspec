@@ -16,6 +16,8 @@ Gem::Specification.new do |gem|
 
   # Dependencies
   gem.add_dependency "faraday"
+  gem.add_dependency "faraday_middleware"
+  gem.add_dependency "hashie"
   gem.add_dependency "json"
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "mocha"

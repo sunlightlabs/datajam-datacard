@@ -23,16 +23,16 @@ class DataCardArea < ContentArea
   end
 
   def render_head
-    renderer.render :partial => 'datajam/datacard/data_card_areas/head_assets'
+    renderer.render :partial => 'datajam/datacard/data_card_area/head_assets'
   end
 
   def render_body
-    renderer.render :partial => 'datajam/datacard/data_card_areas/body_assets'
+    renderer.render :partial => 'datajam/datacard/data_card_area/body_assets'
   end
 
   def render
     renderer.render(
-      :partial => 'datajam/datacard/data_card_areas/content',
+      :partial => 'datajam/datacard/data_card_area/content',
       :locals  => { :data_card => self }
     )
   end

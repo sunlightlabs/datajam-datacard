@@ -1,0 +1,17 @@
+<% active ||= nil %>
+<ul class="nav nav-pills">
+    <li class="<%= active.blank? ? 'active' : '' %>"><%= link_to "List", admin_cards_path %></li>
+    <li class="dropdown <%= active.blank? ? '' : 'active' %>">
+        <%= link_to "#",
+            :class => 'dropdown-toggle',
+            :'data-toggle' => 'dropdown' do %>
+            Create New <b class="caret"></b>
+        <% end %>
+        <ul class="dropdown-menu">
+            <li class="<%= active == 'own-data' ? ' active' : '' %>"><%= link_to "From CSV", new_admin_cards_from_own_datum_path, id: "do_datacard_from_own_data" %></li>
+            <li class="<%= active == 'own-html' ? ' active' : '' %>"><%= link_to "Enter plain HTML", new_admin_cards_from_html_path, id: "do_datacard_from_own_html" %></li>
+            <li class="<%= active == 'csv-file' ? ' active' : '' %>"><%= link_to "From CSV File", new_admin_cards_from_csv_file_path, id: "do_datacard_from_csv_file" %></li>
+            <li class="<%= active == 'api-mapping' ? ' active' : '' %>"><%= link_to "From API Mapping", new_admin_cards_from_api_mapping_path, id: "do_datacard_from_api_mapping" %></li>
+        </ul>
+    </li>
+</ul>

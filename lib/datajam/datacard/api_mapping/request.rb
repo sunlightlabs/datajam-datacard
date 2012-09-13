@@ -1,4 +1,5 @@
 require 'faraday'
+require 'faraday_middleware'
 require 'uri'
 
 module Datajam
@@ -14,7 +15,7 @@ module Datajam
         #
         # Returns fetched response.
         def request(endpoint_name, params = {})
-          endpoint = endpoints[endpoint_name] 
+          endpoint = endpoints[endpoint_name]
           raise EndpointNotFoundError.new(endpoint_name) unless endpoint
 
           params.reject! { |k,v| v.to_s.empty? }
@@ -33,8 +34,10 @@ module Datajam
         # Returns configured connection.
         def new_conn(endpoint)
           Faraday.new(:url => parsed_base_uri.to_s) do |conn|
-            conn.adapter :net_http
             http_setup(conn)
+            conn.use :mashify
+            conn.use :follow_redirects
+            conn.adapter :net_http
           end
         end
 

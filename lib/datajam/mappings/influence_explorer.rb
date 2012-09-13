@@ -62,7 +62,7 @@ class InfluenceExplorerMapping < Datajam::Datacard::APIMapping::Base
 
   def self.http_setup(conn)
     conn.request  :url_encoded
-    conn.response :csv_translated
-    conn.response :json_decoded
+    conn.response :csv_translated, content_type: /\bcsv$/
+    conn.response :json, content_type: /\bjson$/
   end
 end
