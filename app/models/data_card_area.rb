@@ -11,6 +11,7 @@ class DataCardArea < ContentArea
   before_save :set_cards, :set_current_card
 
   # Public: universal interface to handle on-update tasks
+  # Doing this because mongoid callbacks don't seem to propagate down
   def touch
     set_cards
   end

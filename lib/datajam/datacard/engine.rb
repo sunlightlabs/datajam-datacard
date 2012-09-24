@@ -17,7 +17,7 @@ module Datajam
           :title => 'Datacard',
           :items => [
             { title: 'Data Cards', url: '/admin/cards', icon: 'list' },
-            { title: 'API Mappings', url: '/admin/mappings', icon: 'list-alt' },
+            # { title: 'API Mappings', url: '/admin/mappings', icon: 'list-alt' },
           ]
         }
       end
