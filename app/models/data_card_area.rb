@@ -10,6 +10,11 @@ class DataCardArea < ContentArea
 
   before_save :set_cards, :set_current_card
 
+  # Public: universal interface to handle on-update tasks
+  def touch
+    set_cards
+  end
+
   def current_card
     self.current_card_id ? DataCard.find(self.current_card_id) : nil
   end
