@@ -44,7 +44,7 @@ class DataCardArea < ContentArea
 
   def render_update
     r = "<h2>Card Not Yet Selected</h2>"
-    r = self.current_card.render if self.current_card
+    r = self.current_card.render if self.current_card rescue r
   end
 
 end
