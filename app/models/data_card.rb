@@ -17,7 +17,7 @@ class DataCard
   field :source,      type: String
   field :body,        type: String
 
-  has_many :graphs, class_name: "DataCardGraph", inverse_of: :card, dependent: :destroy 
+  has_many :graphs, class_name: "DataCardGraph", inverse_of: :card, dependent: :destroy
 
   attr_accessor :response_fields
   attr_accessor :response
@@ -48,7 +48,7 @@ class DataCard
     return <<-TMPL.strip_heredoc
     <div id="liveCard">
     <h3>{{ title }}</h3>
-    <table class="table table-striped">
+    <table class="table table-striped table-hover">
 
       <thead>
           <tr id="titles">
@@ -109,7 +109,7 @@ class DataCard
     table_body.inject({}) do |res, row|
       y = row[serie_id].to_f_if_possible
       x = row[group_by_id].to_f_if_possible
-      
+
       res[x] = 0 unless res[x]
       res[x] += (y.is_a?(String) ? 1 : y)
       res
