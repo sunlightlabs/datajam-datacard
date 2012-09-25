@@ -1,5 +1,4 @@
 require 'faraday/response/json_decoded'
-require 'faraday/response/csv_translated'
 
 class InfluenceExplorerMapping < Datajam::Datacard::APIMapping::Base
   name        "Influence Explorer"
@@ -62,7 +61,6 @@ class InfluenceExplorerMapping < Datajam::Datacard::APIMapping::Base
 
   def self.http_setup(conn)
     conn.request  :url_encoded
-    conn.response :csv_translated
     conn.response :json_decoded
   end
 end

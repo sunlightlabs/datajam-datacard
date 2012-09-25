@@ -18,7 +18,7 @@ class SmarterAPIMapping < Datajam::Datacard::APIMapping::Base
   protected
 
   def http_setup(conn)
-    conn.use Faraday::Request::UrlEncoded
+    conn.response :json_decoded
     conn.request :url_encoded
   end
 end

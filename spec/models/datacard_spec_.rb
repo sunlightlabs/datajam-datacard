@@ -1,6 +1,6 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
-describe DataCard do
+xdescribe DataCard do
 
   it "can be created when passed in a CSV string" do
     csv = <<-EOF.strip_heredoc
