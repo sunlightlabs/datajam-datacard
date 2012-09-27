@@ -46,7 +46,6 @@ class DataCard
     return body if body.present?
 
     return <<-TMPL.strip_heredoc
-    <div id="liveCard">
     <h3>{{ title }}</h3>
     <table class="table table-striped table-hover">
 
@@ -74,7 +73,6 @@ class DataCard
     {{#if source}}
     <div class="source">Source: {{{source}}}</div>
     {{/if}}
-    </div>
     TMPL
   end
 

@@ -8,6 +8,7 @@ class DataCardArea < ContentArea
   field :data_cards, type: Array
   field :current_card_id, type: String
 
+  before_create :set_cards
   before_save :set_cards, :set_current_card
 
   def current_card
