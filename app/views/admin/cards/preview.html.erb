@@ -12,7 +12,7 @@
   </div>
 <% end %>
 
-<% if @card.body %>
+<% if @card.body.present? %>
   <div class="well">
     <%= raw @card.body %>
   </div>
