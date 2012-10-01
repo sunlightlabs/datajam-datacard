@@ -1,8 +1,8 @@
 <h2><%= @card.title %> data card</h2>
 
-<% if @card.body %>
+<% if @card.body.present? %>
   <div class="well">
-    <%= raw @card.body %>
+    <%= raw @card.render %>
   </div>
 <% else %>
   <ul class="nav nav-pills">
