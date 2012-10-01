@@ -43,7 +43,7 @@ class DataCard
   end
 
   def template
-    return body if body.present?
+    return body if body
 
     return <<-TMPL.strip_heredoc
     <h3>{{ title }}</h3>

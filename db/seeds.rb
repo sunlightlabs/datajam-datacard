@@ -1,4 +1,4 @@
-Setting.find_or_create_by(:namespace => 'datajam-datacard', :name => 'installed')
+Setting.find_or_create_by(:namespace => 'datajam-datacard', :name => 'installed', :value => true)
 
 # Create a couple of example data cards
 
