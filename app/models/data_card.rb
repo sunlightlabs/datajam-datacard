@@ -33,6 +33,8 @@ class DataCard
 
   mount_uploader :csv_file, CsvUploader
 
+  default_scope order_by(title: :asc)
+
   # Mongoid::Slug changes this to `self.slug`. Undo that.
   def to_param
     self.id.to_s
