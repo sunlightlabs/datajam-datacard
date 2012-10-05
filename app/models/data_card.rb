@@ -34,6 +34,12 @@ class DataCard
 
   mount_uploader :csv_file, CsvUploader
 
+  index :title => 1
+  index :csv => 1
+  index :body => 1
+  index :source => 1
+  index :cached_tag_string => 1
+
   default_scope order_by(title: :asc)
 
   # Mongoid::Slug changes this to `self.slug`. Undo that.
