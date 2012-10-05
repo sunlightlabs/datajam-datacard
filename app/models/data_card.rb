@@ -34,11 +34,11 @@ class DataCard
 
   mount_uploader :csv_file, CsvUploader
 
-  index :title => 1
-  index :csv => 1
-  index :body => 1
-  index :source => 1
-  index :cached_tag_string => 1
+  index :title
+  index :csv
+  index :body
+  index :source
+  index :cached_tag_string
 
   default_scope order_by(title: :asc)
 
