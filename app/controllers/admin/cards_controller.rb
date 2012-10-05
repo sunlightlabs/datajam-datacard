@@ -1,7 +1,7 @@
 class Admin::CardsController < AdminController
 
   def index
-    @cards = filter_and_sort DataCard.all.order(:updated_at => :desc)
+    @cards = filter_and_sort DataCard.unscoped.all.order(:updated_at => :desc)
     @card = DataCard.new
     render_if_ajax 'admin/cards/_table'
   end
@@ -20,7 +20,7 @@ class Admin::CardsController < AdminController
 
   def create
     @card = DataCard.new(params[:card])
-    
+
     return if render_preview
     render 'new' and return if params[:back]
 
@@ -37,7 +37,7 @@ class Admin::CardsController < AdminController
     @card = DataCard.find(params[:id])
 
     return if render_preview
-    
+
     if params[:back]
       @card.attributes = params[:card]
       render 'edit' and return
