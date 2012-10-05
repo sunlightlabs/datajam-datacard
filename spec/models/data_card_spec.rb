@@ -24,6 +24,12 @@ describe DataCard do
     card.render.should == "<div>Blah</div>"
   end
 
+  it "caches its tags on save" do
+    card = DataCard.create(title: "Straw Poll", body: "<div>Blah</div>", tag_string: '2012,global')
+    card.cached_tag_string.should include "2012"
+    card.cached_tag_string.should include "global"
+  end
+
   describe "#graph_data" do
     let :card do
       csv = <<-EOF.strip_heredoc

@@ -10,12 +10,13 @@ class DataCard
     ActiveModel::Name.new(self, nil, "Card")
   end
 
-  field :title,       type: String
-  field :table_head,  type: Array,     default: []
-  field :table_body,  type: Array,     default: []
-  field :csv,         type: String
-  field :source,      type: String
-  field :body,        type: String
+  field :title,             type: String
+  field :table_head,        type: Array,     default: []
+  field :table_body,        type: Array,     default: []
+  field :csv,               type: String
+  field :source,            type: String
+  field :body,              type: String
+  field :cached_tag_string, type: String
 
   has_many :graphs, class_name: "DataCardGraph", inverse_of: :card, dependent: :destroy
 
@@ -24,7 +25,7 @@ class DataCard
 
   validates_presence_of :title
 
-  before_save :read_uploaded_csv
+  before_save :read_uploaded_csv, :cache_tags
   before_save :parse_csv
   before_create :read_from_response
   before_create :write_csv_if_none
@@ -104,6 +105,10 @@ class DataCard
   end
 
   protected
+
+  def cache_tags
+    self.cached_tag_string = tag_string
+  end
 
   def pick_values_for(serie_id, group_by_id)
     table_body.inject({}) do |res, row|
