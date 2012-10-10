@@ -19,6 +19,30 @@ describe DataCard do
     card.render.should include("Ron Paul")
   end
 
+  it "Can be changed with new CSV text" do
+    csv = <<-EOF.strip_heredoc
+      "Candidate","Percentage"
+      "Mitt Romney","28%"
+      "Ron Paul","22%"
+    EOF
+
+    params = { title: 'Straw Poll', csv: csv, source: "Gallup" }
+    card = DataCard.create(params)
+
+    csv = <<-EOF.strip_heredoc
+      "Candidate","Percentage"
+      "Mitt Romney","28%"
+      "Barack Obama","28%"
+    EOF
+
+    params = { title: 'Straw Poll', csv: csv, source: "Gallup" }
+    card.update_attributes(params)
+
+    card.table_body.should include(["Barack Obama", "28%"])
+    card.csv.to_s.should include("Barack Obama")
+    card.render.should include("Barack Obama")
+  end
+
   it "throws an error when passed in an invalid CSV string" do
     csv = <<-EOF.strip_heredoc
       "Candidate", "Percentage"
