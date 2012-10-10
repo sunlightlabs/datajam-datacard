@@ -9,7 +9,8 @@ class DataCardArea < ContentArea
   field :current_card_id, type: String
 
   before_create :set_cards
-  before_save :set_cards, :set_current_card
+  before_save :set_cards
+  before_save :set_current_card
 
   def current_card
     self.current_card_id ? DataCard.find(self.current_card_id) : nil

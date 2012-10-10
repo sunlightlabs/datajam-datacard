@@ -38,6 +38,7 @@ describe DataCard do
     params = { title: 'Straw Poll', csv: csv, source: "Gallup" }
     card.update_attributes(params)
 
+    card = DataCard.find(card._id.to_s)
     card.table_body.should include(["Barack Obama", "28%"])
     card.csv.to_s.should include("Barack Obama")
     card.render.should include("Barack Obama")

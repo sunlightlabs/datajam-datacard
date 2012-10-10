@@ -25,9 +25,14 @@ class DataCard
 
   validates_presence_of :title
 
-  before_validation :read_uploaded_csv, :parse_csv
+  before_validation do
+    read_uploaded_csv
+    parse_csv
+    return self.errors.any? ? false : true
+  end
   before_save :cache_tags
-  before_create :read_from_response, :write_csv_if_none
+  before_create :read_from_response
+  before_create :write_csv_if_none
   after_save :save_events
   after_destroy :save_events
 
@@ -137,7 +142,7 @@ class DataCard
     self.table_head = parsed.first
     self.table_body = parsed.slice(1, parsed.length)
   rescue CSV::MalformedCSVError => err
-    errors[:csv_file] << "Invalid CSV file: #{err.message}"
+    self.errors.add :csv_file, "Invalid CSV file: #{err.message}"
   end
 
   def save_events
