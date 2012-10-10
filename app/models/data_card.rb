@@ -134,6 +134,9 @@ class DataCard
   def read_uploaded_csv
     return if csv_file.blank?
     self.csv = csv_file.read
+    #deleting files is way broken. Thanks, CarrierWave!
+    remove_csv_file
+    self.set(:csv_file, nil)
   end
 
   def parse_csv
@@ -142,7 +145,7 @@ class DataCard
     self.table_head = parsed.first
     self.table_body = parsed.slice(1, parsed.length)
   rescue CSV::MalformedCSVError => err
-    self.errors.add :csv_file, "Invalid CSV file: #{err.message}"
+    self.errors.add :csv, "Invalid CSV: #{err.message}"
   end
 
   def save_events
