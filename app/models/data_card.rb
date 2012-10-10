@@ -25,10 +25,9 @@ class DataCard
 
   validates_presence_of :title
 
-  before_save :read_uploaded_csv, :cache_tags
-  before_save :parse_csv
-  before_create :read_from_response
-  before_create :write_csv_if_none
+  before_validation :read_uploaded_csv, :parse_csv
+  before_save :cache_tags
+  before_create :read_from_response, :write_csv_if_none
   after_save :save_events
   after_destroy :save_events
 

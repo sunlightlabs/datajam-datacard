@@ -19,6 +19,21 @@ describe DataCard do
     card.render.should include("Ron Paul")
   end
 
+  it "throws an error when passed in an invalid CSV string" do
+    csv = <<-EOF.strip_heredoc
+      "Candidate", "Percentage"
+      "Mitt Romney", "20%"
+      "Ron Paul", "22%"
+    EOF
+
+    params = {title: 'Straw Poll', csv: csv, source: "Rasmussen" }
+    card = DataCard.create(params)
+
+    card.persisted?.should be_false
+    card.table_head.should be_empty
+    card.errors.full_messages.to_sentence.should include("Illegal quoting")
+  end
+
   it "can be created with an explicit html body" do
     card = DataCard.create(title: "Straw Poll", body: "<div>Blah</div>")
     card.render.should == "<div>Blah</div>"
