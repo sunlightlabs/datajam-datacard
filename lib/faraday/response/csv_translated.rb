@@ -9,8 +9,8 @@ class CsvPreview
 end
 
 module Faraday
-  # Public: Faraday's middleware which translates decoded response 
-  # body into a cvs table.
+  # Public: Faraday's middleware which translates decoded response
+  # body into a csv table.
   class Response::CsvTranslated < Response::Middleware
     def call(env)
       @app.call(env).on_complete do |finished_env|

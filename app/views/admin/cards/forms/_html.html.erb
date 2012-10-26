@@ -1,0 +1,12 @@
+<%= simple_form_for [:admin, @card], html: { class: "form-horizontal" } do |f| %>
+
+  <%= field_set_tag 'Basic card information' do %>
+    <%= render :partial => "admin/cards/forms/common_fields", :locals => {f: f} %>
+    <%= f.input :html, as: :text, label: "HTML for the data card", input_html: { class: "datajamTemplate", rows: 10, cols: 100 } %>
+    <%= f.input :display_type, as: :hidden, input_html: {value: "html"} %>
+    <input type="hidden" class="hidden" name="from" value="html" />
+  <% end %>
+
+  <%= render :partial => "admin/cards/forms/actions", :locals => {f: f} %>
+
+<% end %>

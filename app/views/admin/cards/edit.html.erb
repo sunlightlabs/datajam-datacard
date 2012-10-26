@@ -1,2 +1,18 @@
-<h2>Edit Data Card</h2>
-<%= render "form" %>
+<%= render :partial => 'shared_data_set_warning' %>
+<h2>Editing Data Card: <%= @card.title %></h2>
+
+<%= render :partial => 'navigation' %>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="index">
+        <% content_for :extra_fields do %>
+        <div class="control-group string optional">
+            <label for="card_update_data" class="string optional control-label">Update dataset</label>
+            <div class="controls">
+                <input type="checkbox" id="card_update_data" class="string optional" name="update_data" />
+            </div>
+        </div>
+        <% end %>
+        <%= render :partial => "admin/cards/forms/#{@from}" %>
+    </div>
+</div>

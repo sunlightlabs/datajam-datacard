@@ -1,4 +1,4 @@
-class Admin::MappingSettingsController < Admin::MappingsBaseController
+class Admin::MappingSettingsController < Admin::MappingBaseController
   before_filter :find_mapping
   before_filter :find_mapping_settings
 

@@ -1,0 +1,26 @@
+<%= simple_form_for [:admin, @card], html: { class: "form-horizontal" } do |card_builder| %>
+
+  <%= field_set_tag 'Basic card information' do %>
+    <input type="hidden" class="hidden" name="from" value="csv" />
+    <%= render :partial => "admin/cards/forms/common_fields", :locals => {f: card_builder} %>
+  <% end %>
+
+  <%= card_builder.simple_fields_for :data_set_attributes, @card.data_set do |data_set_builder| %>
+    <%= field_set_tag 'Card data (All cards based on this dataset)' do %>
+      <%= data_set_builder.simple_fields_for :sourced_attributes, @card.data_set.sourced do |sourced_builder| %>
+        <%= sourced_builder.input :data_file, as: :file, label: "Upload CSV File", hint: "File extension must be .csv" %>
+        <%= sourced_builder.input :data, as: :text, label: "Or Enter Data", input_html: { class: "datajamTemplate rawData", rows: 10, cols: 100 } %>
+        <%= sourced_builder.input :source, as: :text, label: 'Source Attribution', input_html: { rows: 5, cols: 80 }, hint: "Can use HTML" %>
+      <% end %>
+      <%= data_set_builder.input :sourced_id, as: :hidden %>
+      <%= data_set_builder.input :sourced_type, as: :hidden, input_html: { value: 'CsvData' } %>
+    <% end %>
+  <% end %>
+
+  <%= field_set_tag 'Columns and sorting (Specific to this card)' do %>
+    <%= render :partial => "admin/cards/forms/graphy_fields", :locals => {f: card_builder} %>
+  <% end %>
+
+  <%= render :partial => "admin/cards/forms/actions", :locals => {f: card_builder} %>
+
+<% end %>

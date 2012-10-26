@@ -1,0 +1,15 @@
+<ul class="nav nav-pills">
+    <li class="<%= 'active' if @from.blank? && @mappings.blank? %>"><%= link_to "Card List", admin_cards_path %></li>
+    <li class="dropdown <%= 'active' unless @from.blank? || @card.persisted? %>">
+        <%= link_to "#",
+            :class => 'dropdown-toggle',
+            :'data-toggle' => 'dropdown' do %>
+            Create New Card <b class="caret"></b>
+        <% end %>
+        <ul class="dropdown-menu">
+            <li class="<%= 'active' if @from == :csv %>"><%= link_to "From CSV", new_admin_card_path(:from => :csv) %></li>
+            <li class="<%= 'active' if @from == :html %>"><%= link_to "Enter plain HTML", new_admin_card_path(:from => :html) %></li>
+            <li class="<%= 'active' if @from == :mapping %>"><%= link_to "From API Mapping", admin_mappings_path(:from => :mapping) %></li>
+        </ul>
+    </li>
+</ul>

@@ -1,6 +1,18 @@
 <h2>API Mappings</h2>
+
+<%= render :partial => 'admin/cards/navigation' %>
+
 <div class="tab-content">
-  <div class="tab-pane active" id="index">
-    <%= render :partial => 'admin/mappings/table' %>
-  </div>
+    <div class="tab-pane active" id="index">
+    <% @mappings.each do |mapping| %>
+    <div class="mapping">
+        <%= render :partial => 'mapping', locals: {mapping: mapping} %>
+    </div>
+    <% end %>
+    <% if @mappings.blank? %>
+    <div class="mapping empty">
+        <p>There are no mappings installed. See the <a href="/admin/plugins/data-card">instructions</a> to find out how to install one!</p>
+    </div>
+    <% end %>
+    </div>
 </div>

@@ -14,6 +14,7 @@ module Datajam
         attr_magic :summary
         attr_magic :description
         attr_magic :base_uri
+        attr_magic :data_type
       end
     end
   end

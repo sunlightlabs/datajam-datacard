@@ -1,0 +1,45 @@
+<h4><%= card.title %></h4>
+<div id="data_card_chart" style="position:relative;width:100%;height:400px;">
+  <svg width="100%" height="100%"></svg>
+</div>
+
+<script type="text/javascript">
+  (function($){
+    var cardData = <%= raw card.prepared_data(:json).to_json %>,
+        cardAxes = ['<%=h card.group_by.to_s %>', '<%=h card.series.first.to_s if card.series.length == 1 %>'];
+    $(function(){
+      require(["/static/javascripts/datajam/datacard/d3-pack.js", "css!/static/stylesheets/datajam/datacard/d3.css"], function(){
+        nv.addGraph(function(){
+          var data = function(){
+            var fields = [],
+                returnData = [];
+            for(var i in cardData[0].series){
+              fields.push(i);
+            };
+            $.each(cardData, function(i, row){
+              var xVal = row.group;
+              $.each(row.series, function(key, val){
+                returnData[fields.indexOf(key)] || (returnData[fields.indexOf(key)] = { "key": key, values: []})
+                returnData[fields.indexOf(key)].values.push({x: row.group, y: val});
+              })
+            });
+            return returnData;
+          },
+          chart = nv.models.multiBarChart();
+          window.cht = chart;
+          chart.xAxis
+            .staggerLabels(true);
+          chart.yAxis
+            .tickFormat(d3.format('s'));
+          d3.select('#data_card_chart svg')
+            .datum(data())
+            .transition().duration(200)
+            .call(chart);
+
+          nv.utils.windowResize(chart.update);
+          return chart;
+        });
+      });
+    });
+  })(jQuery);
+</script>

@@ -1,0 +1,11 @@
+<h4><%= mapping.name %></h4>
+<p><%= mapping.summary %></p>
+
+<%= table_for mapping.endpoints.values, ["Title", "Description", ""] do |endpoint| %>
+<tr>
+  <td><%= endpoint.label %></td>
+  <td width="50%"><%= endpoint.help_text %></td>
+  <td><%= link_to "New Data Card", new_admin_card_path(mapping_id: mapping.id, endpoint: endpoint.name, :from => :mapping), class: "btn btn-small btn-primary", method: "get" %></td>
+  <td><%= link_to "Settings", edit_admin_mapping_settings_path(mapping), class: "btn btn-small" %></td>
+</tr>
+<% end -%>

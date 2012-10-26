@@ -1,0 +1,40 @@
+.datacard-type-choice {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+   text-align: center;
+}
+
+.datacard-type-choice li {
+   width: 48%;
+   float: left;
+   padding: 1%;
+}
+
+.datacard-type-choice li a {
+   border-radius: 5px;
+   background: #EEE;
+   color: #444;
+   padding: 1em 0;
+   display: block;
+   outline: none;
+}
+
+.datacard-type-choice.selected li a {
+   color: #888;
+}
+
+.datacard-type-choice li a:hover {
+   color: #FFF;
+   background: #2255BB;
+}
+
+.datacard-type-choice.selected li a:hover {
+   color: #444;
+   background: #DDD;
+}
+
+.datacard-type-choice li.current a {
+   color: #FFF !important;
+   background: #2255BB !important;
+}

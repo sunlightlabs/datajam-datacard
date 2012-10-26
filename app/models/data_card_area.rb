@@ -13,7 +13,7 @@ class DataCardArea < ContentArea
   before_save :set_current_card
 
   def current_card
-    self.current_card_id ? DataCard.find(self.current_card_id) : nil
+    self.current_card_id ? DataCard.find(self.current_card_id) : nil rescue nil
   end
 
   def set_cards
@@ -39,14 +39,13 @@ class DataCardArea < ContentArea
 
   def render
     render_to_string(
-      :partial => 'datajam/datacard/data_card_areas/content',
-      :locals  => { :data_card => self }
+      :partial => 'datajam/datacard/data_card_areas/content', :locals  => { :data_card => self.current_card, :data_card_area => self }
     )
   end
 
   def render_update
     r = "<h2>Card Not Yet Selected</h2>"
-    r = self.current_card.render if self.current_card rescue r
+    r = self.current_card.html if self.current_card rescue r
   end
 
 end

@@ -17,9 +17,15 @@ module Datajam
           :title => 'Datacard',
           :items => [
             { title: 'Data Cards', url: '/admin/cards', icon: 'list' },
-            # { title: 'API Mappings', url: '/admin/mappings', icon: 'list-alt' },
+            { title: 'API Mappings', url: '/admin/mappings', icon: 'list-alt' },
           ]
         }
+      end
+
+      initializer "temporary_inflections" do
+        ::ActiveSupport::Inflector.inflections do |inflect|
+          inflect.uncountable %w( data )
+        end
       end
 
       if Rails.env =~ /^(development|test)$/

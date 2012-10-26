@@ -1,0 +1,5 @@
+<%= f.input :title %>
+<%= f.input :tag_string, input_html: { class: "taggable" } %>
+<% if params[:data_set_id].present? || @card.data_set_id %>
+  <%= f.input :data_set_id, as: :hidden, input_html: { value: params[:data_set_id].present? ? params[:data_set_id] : @card.data_set_id } %>
+<% end %>

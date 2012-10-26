@@ -4,114 +4,116 @@ class DataCard
   include Mongoid::Slug
 
   include Tag::Taggable
+  include RendersTemplates
 
   # Used for auto-routing
   def self.model_name
     ActiveModel::Name.new(self, nil, "Card")
   end
 
+  def self.display_types
+    [:table, :html].push(DataCard.graphy_display_types).flatten
+  end
+
+  def self.graphy_display_types
+    [:column_chart]
+  end
+
   field :title,             type: String
-  field :table_head,        type: Array,     default: []
-  field :table_body,        type: Array,     default: []
-  field :csv,               type: String
   field :source,            type: String
-  field :body,              type: String
+  field :html,              type: String
+  field :display_type,      type: Symbol
+  field :group_by,          type: Symbol
+  field :sort_by,           type: Symbol
+  field :sort_order,        type: Symbol
+  field :series,            type: Array
+  field :limit,             type: Integer
   field :cached_tag_string, type: String
 
-  has_many :graphs, class_name: "DataCardGraph", inverse_of: :card, dependent: :destroy
-
-  attr_accessor :response_fields
-  attr_accessor :response
-
-  validates_presence_of :title
-
-  before_validation do
-    read_uploaded_csv
-    parse_csv
-    return self.errors.any? ? false : true
-  end
-  before_save :cache_tags
-  before_create :read_from_response
-  before_create :write_csv_if_none
-  after_save :save_events
-  after_destroy :save_events
-
-  mount_uploader :csv_file, CsvUploader
-
   index :title
-  index :csv
-  index :body
   index :source
+  index :html
   index :cached_tag_string
 
   default_scope order_by(title: :asc)
 
+  belongs_to :data_set, autosave: true
+  accepts_nested_attributes_for :data_set
+
+  validates_associated :data_set, unless: :is_html?
+  validates_presence_of :title
+  validates_presence_of :group_by, if: :is_graphy?
+  validates_presence_of :series, unless: :is_html?
+  validates_numericality_of :limit, allow_nil: true
+  validates_inclusion_of :display_type, in: DataCard.display_types
+  validates_inclusion_of :sort_order, in: [:ascending, :descending], allow_nil: true
+  validate :ensure_series_values_are_numeric, if: :is_graphy?
+
+  before_save :cache_tags
+  after_save :save_events
+  after_save :render
+  after_destroy :save_events
+
+  before_validation do
+    self.display_type = display_type.to_sym if display_type.present?
+  end
+
   # Mongoid::Slug changes this to `self.slug`. Undo that.
   def to_param
-    self.id.to_s
+    id.to_s
+  end
+
+  def is_html?
+    display_type == :html
+  end
+
+  def is_graphy?
+    DataCard.graphy_display_types.include?(display_type)
+  end
+
+  def is_table?
+    display_type == :table
+  end
+
+  def from_mapping?
+    data_set.sourced_type == 'MappingData' rescue false
+  end
+
+  def from_csv?
+    data_set.sourced_type == 'CsvData' rescue false
+  end
+
+  def series_string=(ser)
+    if ser.is_a? String
+      ser = ser.split(/, ?/)
+    end
+    self.series = ser.collect{|s| s.downcase.to_sym }
+  end
+
+  def series_string
+    series.join(', ') rescue ''
+  end
+
+  def data_options
+    {
+      sort_by: sort_by,
+      sort_order: sort_order,
+      limit: limit,
+      group_by: group_by,
+      fields: series
+    }.keep_if{|k,v| v.present? }
+  end
+
+  def prepared_data(format, options={})
+    options = data_options.clone.merge(options)
+    data_set.send("as_#{format.to_s}".to_sym, options)
   end
 
   def render
-    Handlebars.compile(template).call(self)
-  end
+    return html if display_type == :html
 
-  def template
-    return body if body.present?
-
-    return <<-TMPL.strip_heredoc
-    <h3>{{ title }}</h3>
-    <table class="table table-striped table-hover">
-
-      <thead>
-          <tr id="titles">
-              {{#each table_head}}
-              <th>{{this}}</th>
-              {{/each}}
-          </tr>
-      </thead>
-
-      <tbody>
-      {{#each table_body}}
-      <tr>
-          {{#each this}}
-          <td>{{this}}</td>
-          {{/each}}
-      </tr>
-      {{/each}}
-      </tbody>
-
-    </table>
-
-    <br/>
-    {{#if source}}
-    <div class="source">Source: {{{source}}}</div>
-    {{/if}}
-    TMPL
-  end
-
-  def graph_data_for(group_by, series)
-    return if series.empty?
-    group_by_id = table_head.index(group_by.to_s) or return
-
-    data = series.map do |key|
-      serie_id = table_head.index(key.to_s) or next
-      values   = pick_values_for(serie_id, group_by_id)
-
-      { key: key, values: values }
-    end
-
-    data.compact!
-    data unless data.empty?
-  end
-
-  def rebuild_table_data!
-    read_uploaded_csv
-    parse_csv
-
-    unless persisted?
-      read_from_response
-      write_csv_if_none
-    end
+    template = "datajam/datacard/data_cards/#{display_type.to_s}"
+    self.set(:html, render_to_string(partial: template, locals: { card: self }))
   end
 
   protected
@@ -120,52 +122,16 @@ class DataCard
     self.cached_tag_string = tag_string
   end
 
-  def pick_values_for(serie_id, group_by_id)
-    table_body.inject({}) do |res, row|
-      y = row[serie_id].to_f_if_possible
-      x = row[group_by_id].to_f_if_possible
-
-      res[x] = 0 unless res[x]
-      res[x] += (y.is_a?(String) ? 1 : y)
-      res
-    end.map { |x,y| {x: x, y: y} }
-  end
-
-  def read_uploaded_csv
-    return if csv_file.blank?
-    self.csv = csv_file.read
-    #deleting files is way broken. Thanks, CarrierWave!
-    remove_csv_file
-    self.set(:csv_file, nil)
-  end
-
-  def parse_csv
-    return if csv.to_s.blank?
-    parsed = CSV.parse(self.csv)
-    self.table_head = parsed.first
-    self.table_body = parsed.slice(1, parsed.length)
-  rescue CSV::MalformedCSVError => err
-    self.errors.add :csv, "Invalid CSV: #{err.message}"
-  end
-
   def save_events
     Event.all.each(&:save)
   end
 
-  def read_from_response
-    return if response.nil?
-    self.table_head = response_fields
-    indexes = response_fields.map { |head| response.data.headers.index(head) }
-    body = response.data.rows.map { |row| indexes.map { |i| row[i] } }
-    self.table_body = body
-  end
-
-  def write_csv_if_none
-    return if self.csv or self.body
-
-    self.csv = CSV.generate({}) do |csv|
-      csv << self.table_head if self.table_head
-      self.table_body.each { |row| csv << row }
-    end.to_s
+  def ensure_series_values_are_numeric
+    series.each do |field|
+      row = data_set.get_data[0]
+      unless row[field].to_s =~ /^[\d\.,]+$/
+        errors.add(:series, 'must contain only numeric fields')
+      end
+    end
   end
 end

@@ -1,0 +1,36 @@
+<p>
+  Using <strong><%= "#{@mapping.id.titleize} / #{@endpoint.label}" %></strong>.
+  (<%= link_to "change", admin_mappings_path %>)
+</p>
+<%= simple_form_for [:admin, @card], html: { class: "form-horizontal" } do |card_builder| %>
+  <input type="hidden" class="hidden" name="from" value="mapping" />
+
+  <%= field_set_tag 'Basic card information' do %>
+    <%= render :partial => "admin/cards/forms/common_fields", :locals => {f: card_builder} %>
+  <% end %>
+
+  <%= field_set_tag 'Query parameters (All cards based on this dataset)' do %>
+    <%= card_builder.simple_fields_for :data_set_attributes, @card.data_set do |data_set_builder| %>
+      <%= data_set_builder.simple_fields_for :sourced_attributes, @card.data_set.sourced do |sourced_builder| %>
+        <%= sourced_builder.input :mapping_id, as: :hidden, input_html: {value: @mapping.id} %>
+        <%= sourced_builder.input :endpoint_name, as: :hidden, input_html: {value: @endpoint.name} %>
+        <%= sourced_builder.simple_fields_for :params do |params_builder| %>
+          <div class="params">
+            <% @endpoint.params.values.each do |param| %>
+              <%= mapping_field_for params_builder, param, (@card.data_set.sourced.params[param.name.to_s] rescue nil) %>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+      <%= data_set_builder.input :sourced_id, as: :hidden %>
+      <%= data_set_builder.input :sourced_type, as: :hidden, input_html: { value: 'MappingData' } %>
+    <% end %>
+    <%= yield :extra_fields %>
+  <% end %>
+
+  <%= field_set_tag 'Columns and sorting (Specific to this card)' do %>
+    <%= render :partial => "admin/cards/forms/graphy_fields", :locals => {f: card_builder} %>
+  <% end %>
+
+  <%= render :partial => "admin/cards/forms/actions", :locals => {f: card_builder} %>
+<% end %>

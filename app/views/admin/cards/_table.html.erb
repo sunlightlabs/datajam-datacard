@@ -1,9 +1,16 @@
 <%= search_box('title,csv,body,source,cached_tag_string') %>
-<%= table_for @cards, [:title, :updated_at] do |card| %>
+<%= table_for @cards, [:title, :display_type, "Tags", :updated_at] do |card| %>
   <tr>
     <td><%= link_to card.title, edit_admin_card_path(card) %></td>
+    <td><%= card.display_type %></td>
+    <td><%= raw card.tag_string.split(',').join('<br>') %></td>
     <td><%= card.updated_at.to_s :humane %></td>
     <td><%= button_to "Preview", admin_card_path(card), class: "btn btn-small", method: "get" %></td>
+    <td>
+      <% if card.data_set_id %>
+      <%= button_to "New From Dataset", new_admin_data_set_card_path(card.data_set_id), class: "btn btn-small btn-primary", method: "get" %>
+      <% end %>
+    </td>
     <td><%= delete_button admin_card_path(card), title: "This will completely destroy the card", confirm: "Are you sure? This will completely destroy the card." %></td>
   </tr>
 <% end %>

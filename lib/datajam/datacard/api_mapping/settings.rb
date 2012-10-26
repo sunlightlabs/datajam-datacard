@@ -7,7 +7,7 @@ module Datajam
         def settings
           @settings ||= {}
         end
-        
+
         # Public: Defines new setting.
         #
         # name    - A String name of the setting.
@@ -26,8 +26,8 @@ module Datajam
         #   end
         #
         # Returns new setting field definition.
-        def setting(name, title = nil, options = {}, &block)
-          settings[name] = Field.new(name, title, options, &block)
+        def setting(name, options = {}, &block)
+          settings[name] = InputField.new(name, options, &block)
         end
 
         # Public: Returns settings persisted in the system.

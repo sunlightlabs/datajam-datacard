@@ -20,7 +20,21 @@ module Datajam
         #   end
         #
         def http_setup(conn)
-          # ...
+          conn.request  :url_encoded
+          conn.response :csv_translated, content_type: /\bcsv$/
+          conn.response :json, content_type: /\bjson$/
+        end
+
+        # Public: Processes a Mapping request, formatting the response data
+        #
+        # endpoint_name - A String or Symbol name of the endpoint.
+        # param         - A Hash with params to be sent in the request.
+        #
+        # Returns fetched response.
+        def process_response(endpoint_name, response)
+          endpoint = endpoints[endpoint_name]
+          raise EndpointNotFoundError.new(endpoint_name) unless endpoint
+          # Do stuff...
         end
       end
     end

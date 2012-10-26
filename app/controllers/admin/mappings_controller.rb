@@ -1,10 +1,6 @@
-class Admin::MappingsController < Admin::MappingsBaseController
-  def index
-    @mappings = Datajam::Datacard.mappings
-  end
+class Admin::MappingsController < Admin::MappingBaseController
+  before_filter :load_mappings, only: [:index]
 
-  def show
-    params[:mapping_id] = params[:id]
-    find_mapping
+  def index
   end
 end
