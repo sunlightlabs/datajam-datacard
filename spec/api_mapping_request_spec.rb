@@ -19,7 +19,7 @@ describe Datajam::Datacard::APIMapping do
         SmarterAPIMapping
       end
 
-      it "performs proper request" do
+      it "performs the proper request" do
         params = { :phrase => 'capitol', :start_date => '2012-01-01' }
 
         Faraday::Connection.any_instance.expects(:get)

@@ -9,7 +9,7 @@
         <ul class="dropdown-menu">
             <li class="<%= 'active' if @from == :csv %>"><%= link_to "From CSV", new_admin_card_path(:from => :csv) %></li>
             <li class="<%= 'active' if @from == :html %>"><%= link_to "Enter plain HTML", new_admin_card_path(:from => :html) %></li>
-            <li class="<%= 'active' if @from == :mapping %>"><%= link_to "From API Mapping", admin_mappings_path(:from => :mapping) %></li>
+            <li class="<%= 'active' if @from == :mapping %>"><%= link_to "From remote data", admin_mappings_path(:from => :mapping) %></li>
         </ul>
     </li>
 </ul>
