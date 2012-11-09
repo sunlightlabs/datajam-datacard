@@ -5,11 +5,13 @@ class DataSet
   include Mongoid::Timestamps
   include Mongoid::Slug
 
-  field :data, type: Binary
+  field :marshaled_data, type: Binary
 
   has_many :cards, class_name: "DataCard", inverse_of: :data_set, dependent: :destroy
   belongs_to :sourced, polymorphic: true, autosave: true
   accepts_nested_attributes_for :sourced
+
+  validates_associated :sourced
 
   before_save :load_data
   after_save :render_cards
@@ -18,18 +20,33 @@ class DataSet
     sourced.name
   end
 
+  def data
+    @data ||= Marshal.load(Base64.decode64(marshaled_data))
+  end
+
+  def data=(data_to_marshal)
+    @data = nil
+    self.marshaled_data = Base64.encode64(Marshal.dump(data_to_marshal))
+  end
+
+  def sourced_attributes=(attributes)
+    self.sourced = sourced_type.constantize.find_or_initialize_by(id: sourced_id)
+    self.sourced.update_attributes(attributes)
+    self.sourced_id = self.sourced.id
+  end
+
   def load_data
     return unless sourced
     loader = "from_#{sourced.data_type.to_s}".to_sym
     if sourced.respond_to? :perform!
-      self.data = Base64.encode64(Marshal.dump(self.send(loader, sourced.perform!)))
+      self.data = send(loader, sourced.perform!)
     else
-      self.data = Base64.encode64(Marshal.dump(self.send(loader, sourced.data)))
+      self.data = send(loader, sourced.data)
     end
   end
 
   def as_json(options={})
-    arr = get_data
+    arr = data
     if options[:group_by].present?
       grouped = []
       indices = {}
@@ -60,9 +77,16 @@ class DataSet
         arr.sort_by!{|obj| obj[metric] }
       end
       if options[:fields].present?
-        arr = arr.collect do |row|
-          row.keep_if{|k,v| options[:fields].include? k.to_s}
+        # if fields were passed, keys should be sorted accordingly
+        sorted = []
+        arr.each do |row|
+          sorted_row = ActiveSupport::OrderedHash.new
+          options[:fields].each do |field|
+            sorted_row[field] = row[field]
+          end
+          sorted.push sorted_row
         end
+        arr = sorted
       end
     end
     if options[:sort_order] == :descending
@@ -80,6 +104,7 @@ class DataSet
 
   def as_csv(options={})
     arr = as_json(options)
+    return arr if arr.empty?
     rows = []
     if options[:group_by].present?
       keys = arr[0][:series].keys
@@ -96,18 +121,10 @@ class DataSet
     rows
   end
 
-  def to_csv(options = {})
-    options[:sep] ||= ','
-    sep = options.pop(:sep)
-    as_csv(options).collect do |row|
-      row.join(sep)
-    end.join("\n")
-  end
-
-  def sourced_attributes=(attributes)
-    self.sourced = sourced_type.constantize.find_or_initialize_by(id: sourced_id)
-    self.sourced.update_attributes(attributes)
-    self.sourced_id = self.sourced.id
+  def to_csv(options={})
+    csv = ""
+    as_csv(options).each{ |row| csv += row.to_csv }
+    csv.sub(/\n$/, '')
   end
 
   protected
@@ -117,10 +134,6 @@ class DataSet
   end
 
   private
-
-  def get_data
-    Marshal.load(Base64.decode64(data))
-  end
 
   def from_json(json)
     JSON.parse(json)

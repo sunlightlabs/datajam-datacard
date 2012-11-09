@@ -2,8 +2,8 @@
 require File.expand_path('../lib/datajam/datacard/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Sunlight Labs", "Chris Kowalik"]
-  gem.email         = ["chris@nu7hat.ch"]
+  gem.authors       = ["Dan Drinkard", "Chris Kowalik", "Sunlight Foundation"]
+  gem.email         = "ddrinkard@sunlightfoundation.com"
   gem.description   = File.open(File.expand_path("../README.md", __FILE__)).read rescue nil
   gem.summary       = %q{Datacard engine for Datajam}
   gem.homepage      = "http://datajam.org"
@@ -19,6 +19,10 @@ Gem::Specification.new do |gem|
   gem.add_dependency "faraday_middleware"
   gem.add_dependency "hashie"
   gem.add_dependency "json"
+
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "mocha"
+  gem.add_development_dependency "vcr"
+  gem.add_development_dependency "fakeweb"
+  gem.add_development_dependency "fuubar"
 end

@@ -19,16 +19,16 @@ class DataCard
     [:column_chart]
   end
 
-  field :title,             type: String
-  field :source,            type: String
-  field :html,              type: String
-  field :display_type,      type: Symbol
-  field :group_by,          type: Symbol
-  field :sort_by,           type: Symbol
-  field :sort_order,        type: Symbol
-  field :series,            type: Array
-  field :limit,             type: Integer
-  field :cached_tag_string, type: String
+  field :title,               type: String
+  field :source,              type: String
+  field :html,                type: String
+  field :display_type,        type: Symbol
+  field :group_by,            type: String
+  field :sort_by,             type: String
+  field :sort_order,          type: Symbol
+  field :series,              type: Array
+  field :limit,               type: Integer
+  field :cached_tag_string,   type: String
 
   index :title
   index :source
@@ -40,6 +40,10 @@ class DataCard
   belongs_to :data_set, autosave: true
   accepts_nested_attributes_for :data_set
 
+  before_validation do
+    self.display_type = display_type.to_sym if display_type.present?
+  end
+
   validates_associated :data_set, unless: :is_html?
   validates_presence_of :title
   validates_presence_of :group_by, if: :is_graphy?
@@ -47,20 +51,21 @@ class DataCard
   validates_numericality_of :limit, allow_nil: true
   validates_inclusion_of :display_type, in: DataCard.display_types
   validates_inclusion_of :sort_order, in: [:ascending, :descending], allow_nil: true
-  validate :ensure_series_values_are_numeric, if: :is_graphy?
 
   before_save :cache_tags
-  after_save :save_events
   after_save :render
+  after_save :save_events
   after_destroy :save_events
 
-  before_validation do
-    self.display_type = display_type.to_sym if display_type.present?
-  end
+  alias_method :_source, :source
 
   # Mongoid::Slug changes this to `self.slug`. Undo that.
   def to_param
     id.to_s
+  end
+
+  def source
+    _source || data_set.sourced.mapping.name rescue nil
   end
 
   def is_html?
@@ -68,7 +73,7 @@ class DataCard
   end
 
   def is_graphy?
-    DataCard.graphy_display_types.include?(display_type)
+    ::DataCard.graphy_display_types.include?(display_type)
   end
 
   def is_table?
@@ -83,11 +88,19 @@ class DataCard
     data_set.sourced_type == 'CsvData' rescue false
   end
 
+  def has_siblings?
+    data_set && data_set.cards.length > 1
+  end
+
+  def siblings
+    data_set && data_set.cards.entries.reject{|card| card.id == id }
+  end
+
   def series_string=(ser)
     if ser.is_a? String
       ser = ser.split(/, ?/)
     end
-    self.series = ser.collect{|s| s.downcase.to_sym }
+    self.series = ser
   end
 
   def series_string
@@ -127,11 +140,16 @@ class DataCard
   end
 
   def ensure_series_values_are_numeric
+    row = data_set.as_json[0]
     series.each do |field|
-      row = data_set.get_data[0]
       unless row[field].to_s =~ /^[\d\.,]+$/
         errors.add(:series, 'must contain only numeric fields')
       end
     end
   end
+end
+
+# FIXME: This seems to fail when run in an initializer or RendersTemplates' after_initialize hook
+RendersTemplates::DummyController.class_eval do
+  helper 'datajam/datacard/data_cards'
 end

@@ -19,3 +19,14 @@ describe Array do
     end
   end
 end
+
+describe Float do
+  describe "#to_delimited" do
+    it "returns a string with thousands separators" do
+      (123456789.0).to_delimited.should == "123,456,789.0"
+    end
+    it "takes a delimiter option" do
+      (123456789.0).to_delimited(delimiter: '.').should == "123.456.789.0"
+    end
+  end
+end

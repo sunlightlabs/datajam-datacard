@@ -18,4 +18,26 @@ describe Datajam::Datacard::Mappings do
       end
     end
   end
+
+  describe ".push" do
+    context "when mapping is not registered" do
+      it "adds the mapping" do
+        subject.find_by_klass("SmarterApiMapping").should_not be
+        class SmarterApiMapping
+          def self.id
+            "SmarterApiMapping"
+          end
+        end
+        subject.push SmarterAPIMapping
+        subject.find_by_klass("SmarterAPIMapping").should == SmarterAPIMapping
+      end
+    end
+    context "when mapping is already registered" do
+      it "doesn't add the mapping" do
+        subject.select{|m| m == DummyAPIMapping}.length.should == 1
+        subject.push DummyAPIMapping
+        subject.select{|m| m == DummyAPIMapping}.length.should == 1
+      end
+    end
+  end
 end

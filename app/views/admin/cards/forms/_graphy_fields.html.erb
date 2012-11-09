@@ -2,5 +2,9 @@
 <%= f.input :group_by, collection: (@endpoint.response.fields.values.collect{|g| [g.label] } rescue nil), label: "Group by field", hint: "Optional: Select the field to map to the x-axis if this is a chart" %>
 <%= f.input :sort_by, collection: (@endpoint.response.fields.values.collect{|g| [g.label] } rescue nil), label: "Sort by field", hint: "Optional: Select the field to sort results by in a chart or table" %>
 <%= f.input :sort_order, collection: [:ascending, :descending], label: "Sort order", hint: "Optional: Select the direction to sort the results in a chart or table." %>
-<%= f.input :series, collection: (@endpoint.response.fields.values.collect{|g| [g.label] } rescue nil), label: "Series fields", hint: "Optional: Select the fields to sum values for the y-axis in a chart, or the fields to include in a table", input_html: {multiple: true} %>
+<% if @card.from_mapping? %>
+  <%= f.input :series, collection: (@endpoint.response.fields.values.collect{|g| [g.label] } rescue nil), label: "Series fields", hint: "Select the fields to sum values for the y-axis in a chart, or the fields to include in a table", input_html: {multiple: true} %>
+<% elsif @card.from_csv? %>
+  <%= f.input :series_string, label: "Series Fields", hint: "Enter the fields to sum values for the y-axis in a chart, or the fields to include in a table (comma-separated)" %>
+<% end %>
 <%= f.input :limit, label: "Number of rows", hint: "Optional: The number of rows to display in the chart or table." %>

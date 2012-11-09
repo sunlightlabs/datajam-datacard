@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :cards
+    resources :cards do
+      post 'to_html', :on => :member
+      post 'to_csv', :on => :member
+    end
     resources :mapping_data
     resources :csv_data
 

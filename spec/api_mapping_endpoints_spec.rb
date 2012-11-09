@@ -1,5 +1,4 @@
 require File.expand_path('../spec_helper', __FILE__)
-require File.expand_path('../fixtures/dummy_api_mapping', __FILE__)
 
 describe Datajam::Datacard::APIMapping do
   subject do
@@ -12,20 +11,20 @@ describe Datajam::Datacard::APIMapping do
       subject.endpoints.should have_key(:marty)
       subject.endpoints[:marty].tap do |marty|
         marty.name.should == :marty
-        marty.title.should == "Marty Macfly"
+        marty.label.should == "Marty Macfly"
       end
     end
 
     context "when block given" do
       it "executes it within field instance" do
         subject.endpoint :doc do
-          title     "Emmet Brown"
+          label     "Emmet Brown"
           help_text "Doctor invented a time machine"
         end
         subject.endpoints.should have_key(:doc)
         subject.endpoints[:doc].tap do |doc|
           doc.name.should == :doc
-          doc.title.should == "Emmet Brown"
+          doc.label.should == "Emmet Brown"
           doc.help_text.should == "Doctor invented a time machine"
         end
       end
@@ -44,9 +43,9 @@ describe Datajam::Datacard::APIMapping do
   describe "endpoint entries with params" do
     it "should be registered correctly" do
       subject.get :biff, "Biff Tannen" do
-        param :greeting, "Greeting", :type => :text, :placeholder => "Hello Biff!"
+        param :greeting, label: "Greeting", :type => :text, :placeholder => "Hello Biff!"
         param :another do
-          title "Another one"
+          label "Another one"
           type  :select, :options => (1..5).to_a
         end
       end
@@ -54,7 +53,7 @@ describe Datajam::Datacard::APIMapping do
         biff.params.should have_key(:greeting)
         biff.params[:greeting].tap do |greeting|
           greeting.name.should == :greeting
-          greeting.title.should == "Greeting"
+          greeting.label.should == "Greeting"
           greeting.type.should == :text
           greeting.placeholder.should == "Hello Biff!"
         end

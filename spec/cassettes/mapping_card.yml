@@ -1,0 +1,61 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://capitolwords.org/api/dates.json?phrase=capitol&apikey=c711d58a1c634f0aa366c21ddc4de6c7&start_date=2012-01-01&end_date=2012-08-01&granularity=month
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      accept-encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      accept:
+      - ! '*/*'
+      user-agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/0.8.52
+      content-type:
+      - application/json; charset=utf-8
+      keep-alive:
+      - timeout=20
+      cache-control:
+      - max-age=600
+      vary:
+      - Authorization
+      expires:
+      - Thu, 08 Nov 2012 23:47:29 GMT
+      last-modified:
+      - Thu, 08 Nov 2012 23:37:29 GMT
+      x-ua-compatible:
+      - IE=edge
+      content-length:
+      - '576'
+      date:
+      - Thu, 08 Nov 2012 23:38:04 GMT
+      x-varnish:
+      - '959576913'
+      age:
+      - '0'
+      via:
+      - 1.1 varnish
+      connection:
+      - close
+    body:
+      encoding: US-ASCII
+      string: ! "{\n    \"results\": [\n        {\n            \"count\": 39.0,\n
+        \           \"month\": \"201201\"\n        },\n        {\n            \"count\":
+        121.0,\n            \"month\": \"201202\"\n        },\n        {\n            \"count\":
+        109.0,\n            \"month\": \"201203\"\n        },\n        {\n            \"count\":
+        74.0,\n            \"month\": \"201204\"\n        },\n        {\n            \"count\":
+        201.0,\n            \"month\": \"201205\"\n        },\n        {\n            \"count\":
+        193.0,\n            \"month\": \"201206\"\n        },\n        {\n            \"count\":
+        100.0,\n            \"month\": \"201207\"\n        }\n    ]\n}"
+    http_version: '1.1'
+  recorded_at: Thu, 08 Nov 2012 23:37:31 GMT
+recorded_with: VCR 2.3.0

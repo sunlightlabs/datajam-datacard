@@ -1,4 +1,5 @@
 require 'json'
+require 'datajam/datacard/api_mapping/input_field'
 
 class MappingData
   class Error < StandardError
@@ -9,18 +10,14 @@ class MappingData
 
   field :mapping_id,    type: String
   field :endpoint_name, type: Symbol
-  field :params,        type: Hash
+  field :params,        type: Hash,   default: {}
 
   has_many :data_sets, as: :sourced, dependent: :destroy
 
   attr_accessor :mapping
 
-  # def self.prepare(mapping, endpoint, params = {})
-  #   new(:mapping_id => mapping.id,
-  #       :endpoint_name => endpoint.name,
-  #       :params => params,
-  #       :mapping => mapping)
-  # end
+  before_validation :set_param_values
+  validate :check_mapping_values
 
   def mapping
     @mapping ||= Datajam::Datacard.mappings.find_by_klass(mapping_id)
@@ -39,7 +36,7 @@ class MappingData
     resp = mapping.request(endpoint_name.to_sym, params)
     raise Error, resp.body if resp.status >= 400
 
-    data = mapping.process_response resp
+    data = endpoint.response.before_filter.call resp
 
     if !data || !data.length
       raise Error, "Couldn't parse the response or returned json was empty"
@@ -51,9 +48,8 @@ class MappingData
       record = {}
       row.each do |k,v|
         begin
-          puts k, v
           field_name = endpoint.response.fields[k.to_sym].label
-          record[field_name] = endpoint.response.fields[k.to_sym].value_reader.call v
+          record[field_name] = endpoint.response.fields[k.to_sym].value_getter.call v
         rescue
           nil
         end
@@ -62,5 +58,32 @@ class MappingData
     end
 
     JSON.dump(arr)
+  end
+
+  protected
+
+  def set_param_values
+    params.each do |k,v|
+      field = endpoint.params[k.to_sym]
+      value = field.value_setter.call(v)
+      self.params[k] = value
+    end
+  end
+
+  def check_mapping_values
+    invalid_fields = {}
+    params.each do |k,v|
+      field = endpoint.params[k.to_sym]
+      field.validators.each do |validator|
+        invalid_fields[k] = field.label unless validator.call(v) || invalid_fields.keys.include?(k)
+      end
+    end
+    if invalid_fields.any?
+      message = "Some fields were invalid or not found: #{invalid_fields.values.join(', ')}."
+      if invalid_fields.keys.include? "entity_id"
+        message += " Try looking up an ID number for #{invalid_fields['entity_id']} at http://influenceexplorer.com."
+        errors.add(:base, message)
+      end
+    end
   end
 end

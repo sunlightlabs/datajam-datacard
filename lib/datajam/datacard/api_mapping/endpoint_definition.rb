@@ -30,6 +30,7 @@ module Datajam
         #
         # Returns new param definition.
         def param(name, options = {}, &block)
+            options[:prompt] = '' if options[:type] == :select && options[:prompt].nil?
           params[name] = InputField.new(name, options, &block)
         end
 

@@ -4,16 +4,18 @@
     <tr>
       <% card.prepared_data(:csv)[0].each do |header| %>
         <th><%= header %></th>
-      <% end %>
+      <% end rescue nil %>
     </tr>
   </thead>
   <tbody>
-    <% card.prepared_data(:csv, fields: card.series)[1..-1].each do |row| %>
+    <% card.prepared_data(:csv)[1..-1].each do |row| %>
       <tr>
-        <% row.each do |value| %>
-          <td><%= value %></td>
+        <% row.each_index do |i| %>
+          <%# FIXME: RSpec doesn't load the helper correctly, can't test. Find a better way to include helpers. %>
+          <td><%= formatted_value_for_series_index(row[i], i, card) rescue row[i] %></td>
         <% end %>
       </tr>
-    <% end %>
+    <% end rescue nil %>
   </tbody>
 </table>
+<p><%= raw card.source %></p>

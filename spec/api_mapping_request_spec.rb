@@ -1,6 +1,4 @@
 require File.expand_path('../spec_helper', __FILE__)
-require File.expand_path('../fixtures/dummy_api_mapping', __FILE__)
-require File.expand_path('../fixtures/smarter_api_mapping', __FILE__)
 
 describe Datajam::Datacard::APIMapping do
   describe ".request" do
@@ -22,13 +20,13 @@ describe Datajam::Datacard::APIMapping do
       end
 
       it "performs proper request" do
-        params = { :author => 'Marty', :greetings => 'Sup Doc!' }
+        params = { :phrase => 'capitol', :start_date => '2012-01-01' }
 
         Faraday::Connection.any_instance.expects(:get)
-          .with('/api/2.0/hello.json', params)
+          .with('/api/dates.json', params)
           .returns('ok')
 
-        res = subject.request(:hello, params)
+        res = subject.request(:word_over_time, params)
         res.should == 'ok'
       end
     end

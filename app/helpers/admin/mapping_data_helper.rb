@@ -14,4 +14,8 @@ module Admin::MappingDataHelper
     field_params.merge!( selected: value ) if value.present? && field_params[:collection].present?
     form.input field.name, field_params
   end
+
+  def param_value_for(card, param)
+    card.data_set.sourced.params[param.name.to_s] || param.default rescue nil
+  end
 end

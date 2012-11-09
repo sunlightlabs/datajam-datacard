@@ -17,8 +17,6 @@ module Datajam
 
       # Base class for API mappings, which provides full stack DSL
       # to describe configuration and endpoints.
-      #
-      # Check `lib/datajam/datacard/mappings/*.rb` files to see examples.
       class Base
         class << self
           alias_method :id, :name
@@ -30,13 +28,13 @@ module Datajam
         extend Request
         extend Defaults
 
-        # Callback executed when new mapping inherits after Base.
-        # It registers given component in mappings list.
+        # Callback executed after mapping inherits from Base.
+        # Registers the given subclass in the mappings list.
         #
         # component - A mapping to be registered.
         #
         def self.inherited(component)
-          Datajam::Datacard.mappings << component
+          Datajam::Datacard.mappings.push component
         end
       end
     end

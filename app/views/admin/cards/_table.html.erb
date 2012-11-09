@@ -5,12 +5,27 @@
     <td><%= card.display_type %></td>
     <td><%= raw card.tag_string.split(',').join('<br>') %></td>
     <td><%= card.updated_at.to_s :humane %></td>
-    <td><%= button_to "Preview", admin_card_path(card), class: "btn btn-small", method: "get" %></td>
     <td>
       <% if card.data_set_id %>
-      <%= button_to "New From Dataset", new_admin_data_set_card_path(card.data_set_id), class: "btn btn-small btn-primary", method: "get" %>
+      <%= button_to "Duplicate", new_admin_data_set_card_path(card.data_set_id), class: "btn btn-small btn-primary", method: "get" %>
       <% end %>
     </td>
+    <td>
+      <% if card.data_set_id %>
+        <div class="btn-group">
+          <a href="#" class="btn btn-small btn-warning dropdown-toggle" data-toggle="dropdown">
+            Convert <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><%= link_to "HTML", to_html_admin_card_path(card), method: "post", confirm: "Are you sure? This will completely destroy the card's dataset." %></li>
+            <% if card.from_mapping? %>
+              <li><%= link_to "CSV", to_csv_admin_card_path(card), method: "post", confirm: "Are you sure? This is a one-way process, and will affect any other cards using this dataset." %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </td>
+    <td><%= button_to "Preview", admin_card_path(card), class: "btn btn-small", method: "get" %></td>
     <td><%= delete_button admin_card_path(card), title: "This will completely destroy the card", confirm: "Are you sure? This will completely destroy the card." %></td>
   </tr>
 <% end %>

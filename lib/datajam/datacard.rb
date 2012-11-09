@@ -1,13 +1,12 @@
 require "active_support/dependencies"
 
 require "datajam/datacard/core_ext/array"
+require "datajam/datacard/core_ext/float"
 require "datajam/datacard/core_ext/object"
 require "datajam/datacard/version"
 require "datajam/datacard/magic_attrs"
 require "datajam/datacard/api_mapping"
 require "datajam/datacard/engine"
-
-require "datajam/mappings/influence_explorer"
 
 module Datajam
   module Datacard

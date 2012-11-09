@@ -20,8 +20,14 @@ module Datajam
 
           params.reject! { |k,v| v.to_s.empty? }
 
-          conn, verb = new_conn(endpoint), endpoint.http_verb.downcase
-          conn.send(verb, File.join(parsed_base_uri.path, endpoint.uri), params)
+          conn, verb, uri = new_conn(endpoint), endpoint.http_verb.downcase, endpoint.uri
+          params.each do |k,v|
+            pat = ":#{k.downcase}"
+            matches = uri.scan pat
+            uri = uri.gsub(pat, v)
+            params.delete k if matches.any?
+          end
+          conn.send(verb, File.join(parsed_base_uri.path, uri), params)
         end
 
         protected

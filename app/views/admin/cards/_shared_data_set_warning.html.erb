@@ -1,8 +1,8 @@
-<% if @card.data_set.cards.length > 1 %>
+<% if @card.has_siblings? %>
     <div class="alert alert-warning">
         <p>This card is based on a shared data set! Any changes you make to the data here will reflect in this data set's other cards:</p>
         <ul>
-            <% @card.data_set.cards.reject{|card| card == @card}.each do |card| %>
+            <% @card.siblings.each do |card| %>
             <li><%= link_to card.title, edit_admin_card_path(card) %></li>
             <% end %>
         </ul>

@@ -1,4 +1,4 @@
-class Admin::MappingSettingsController < Admin::MappingBaseController
+class Admin::MappingSettingsController < ::Datajam::Datacard::EngineController
   before_filter :find_mapping
   before_filter :find_mapping_settings
 

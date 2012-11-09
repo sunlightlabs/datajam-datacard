@@ -17,7 +17,7 @@
         <%= sourced_builder.simple_fields_for :params do |params_builder| %>
           <div class="params">
             <% @endpoint.params.values.each do |param| %>
-              <%= mapping_field_for params_builder, param, (@card.data_set.sourced.params[param.name.to_s] rescue nil) %>
+              <%= mapping_field_for params_builder, param, param_value_for(@card, param) %>
             <% end %>
           </div>
         <% end %>

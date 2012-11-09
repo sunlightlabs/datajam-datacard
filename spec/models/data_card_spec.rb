@@ -1,108 +1,112 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
 describe DataCard do
+  include DataCardExampleHelperMethods
 
-  it "can be created when passed in a CSV string" do
-    csv = <<-EOF.strip_heredoc
-      "Candidate","Percentage"
-      "Mitt Romney","28%"
-      "Ron Paul","22%"
-    EOF
-
-    params = { title: 'Straw Poll', csv: csv, source: "Gallup" }
-    card = DataCard.create(params)
-
-    card.table_head.should eql(['Candidate','Percentage'])
-    card.table_body.length.should eql(2)
-
-    card.render.should include("Gallup")
-    card.render.should include("Ron Paul")
+  it "can be created from html" do
+    card = DataCard.create!(from_html)
+    card.html.should include "hello, world!"
   end
 
-  it "Can be changed with new CSV text" do
-    csv = <<-EOF.strip_heredoc
-      "Candidate","Percentage"
-      "Mitt Romney","28%"
-      "Ron Paul","22%"
-    EOF
-
-    params = { title: 'Straw Poll', csv: csv, source: "Gallup" }
-    card = DataCard.create(params)
-
-    csv = <<-EOF.strip_heredoc
-      "Candidate","Percentage"
-      "Mitt Romney","28%"
-      "Barack Obama","28%"
-    EOF
-
-    params = { title: 'Straw Poll', csv: csv, source: "Gallup" }
-    card.update_attributes(params)
-
-    card = DataCard.find(card._id.to_s)
-    card.table_body.should include(["Barack Obama", "28%"])
-    card.csv.to_s.should include("Barack Obama")
-    card.render.should include("Barack Obama")
+  it "can be created from csv" do
+    card = DataCard.create!(from_csv)
+    card.html.should include "<td>Thing 1</td>"
   end
 
-  it "throws an error when passed in an invalid CSV string" do
-    csv = <<-EOF.strip_heredoc
-      "Candidate", "Percentage"
-      "Mitt Romney", "20%"
-      "Ron Paul", "22%"
-    EOF
+  it "re-renders when edited" do
+    card = DataCard.create!(from_csv)
+    card.html.should include "<td>Thing 1</td>"
+    new_attrs = from_csv
+    new_attrs[:data_set_attributes][:sourced_attributes][:data].gsub!("Thing", "Foo")
+    card.update_attributes(new_attrs)
+    card.html.should include "<td>Foo 1</td>"
+  end
 
-    params = {title: 'Straw Poll', csv: csv, source: "Rasmussen" }
-    card = DataCard.create(params)
-
+  it "throws an error when given invalid csv" do
+    card_params = from_csv
+    card_params[:data_set_attributes][:sourced_attributes][:data] = "\"A\", \"b\" \n1, 2"
+    card = DataCard.create(card_params)
     card.persisted?.should be_false
-    card.table_head.should be_empty
-    card.errors.full_messages.to_sentence.should include("Illegal quoting")
+    card.html.should be_blank
+    card.data_set.sourced.errors.full_messages.to_sentence.should include("Illegal quoting")
   end
 
-  it "can be created with an explicit html body" do
-    card = DataCard.create(title: "Straw Poll", body: "<div>Blah</div>")
-    card.render.should == "<div>Blah</div>"
-  end
-
-  it "caches its tags on save" do
-    card = DataCard.create(title: "Straw Poll", body: "<div>Blah</div>", tag_string: '2012,global')
-    card.cached_tag_string.should include "2012"
-    card.cached_tag_string.should include "global"
-  end
-
-  describe "#graph_data" do
-    let :card do
-      csv = <<-EOF.strip_heredoc
-        "Candidate","Percentage","Age","Party"
-        "Mitt Romney",28,42,One
-        "Ron Paul",22,38,One
-        "Marty MacFly",18,22,Two
-      EOF
-
-      params = { title: 'Graphed Card', csv: csv, source: "Dummy" }
-      DataCard.create(params)
-    end
-
-    it "returns nothing when series are empty" do
-      card.graph_data_for("Candidate", []).should_not be
-    end
-
-    it "returns nothing when grouping column or series columns are invalid" do
-      card.graph_data_for("Not exists", ["Percentage"]).should_not be
-      card.graph_data_for("Candidate", ["Not exists"]).should_not be
-    end
-
-    it "returns graph data when specified group and series are valid" do
-      graph_data = card.graph_data_for("Party", %w{Percentage Age})
-      graph_data.should have(2).items
-      graph_data[0].tap do |serie|
-        serie[:key].should == "Percentage"
-        serie[:values].map(&:to_a).should == [
-          [[:x, "One"], [:y, 50.0]],
-          [[:x, "Two"], [:y, 18.0]],
-        ]
-      end
+  it "can be created from API mapping params" do
+    VCR.use_cassette "mapping_card" do
+      card = DataCard.create!(from_mapping)
+      card.html.should include "cardData = [{"
     end
   end
 
+  it "caches tags for searching" do
+    card = DataCard.create!(from_html)
+    card.cached_tag_string.should_not be_blank
+    card.cached_tag_string.should == card.tag_string
+  end
+
+  it "indicates its display type and provenance" do
+    VCR.use_cassette "mapping_card" do
+      card1 = DataCard.create!(from_html)
+      card2 = DataCard.create!(from_csv)
+      card3 = DataCard.create!(from_mapping)
+      card1.is_html?.should be_true
+      card2.is_table?.should be_true
+      card2.from_csv?.should be_true
+      card2.from_mapping?.should be_false
+      card3.is_graphy?.should be_true
+      card3.from_mapping?.should be_true
+    end
+  end
+
+  it "inherits its source info from an available API Mapping" do
+    VCR.use_cassette "mapping_card" do
+      card = DataCard.create!(from_mapping)
+      card.source.should == SmarterAPIMapping.name
+      card.source.should_not be_blank
+    end
+  end
+
+  it "indicates when other cards are based on its data set" do
+    card1 = DataCard.create!(from_csv)
+    card1.has_siblings?.should be_false
+    card2_params = from_csv
+    card2_params.delete("data_set_attributes")
+    card2_params["data_set_id"] = card1.data_set.id.to_s
+    card2 = DataCard.create!(card2_params)
+    card2.has_siblings?.should be_true
+    card1.has_siblings?.should be_true
+  end
+
+  it "returns its sibling cards correctly" do
+    card1 = DataCard.create!(from_csv)
+    card2_params = from_csv
+    card2_params.delete("data_set_attributes")
+    card2_params["data_set_id"] = card1.data_set.id.to_s
+    card2 = DataCard.create!(card2_params)
+    card2.siblings.should == [card1]
+  end
+
+  it "can set series fields from a comma-delimited string" do
+    card = DataCard.create!(from_csv)
+    card.series.should === ["Title", "Text"]
+  end
+
+  it "can convert series fields to a comma-delimited string" do
+    card = DataCard.create!(from_csv)
+    card.series_string.should == "Title, Text"
+  end
+
+  it "returns prepared data in the specified format" do
+    card = DataCard.create!(from_csv)
+    card.prepared_data(:csv)[0].should == ["Title", "Text"]
+    card.prepared_data(:csv)[1].should == ["Thing 1", "Thing 1 is a thing"]
+    card.prepared_data(:json)[0].should == {"Title" => "Thing 1", "Text" => "Thing 1 is a thing"}
+  end
+
+  it "gets garbage collected when its data is deleted" do
+    card = DataCard.create!(from_csv)
+    card.persisted?.should be_true
+    card.data_set.sourced.destroy
+    card.persisted?.should be_false
+  end
 end

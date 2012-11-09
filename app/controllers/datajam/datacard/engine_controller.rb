@@ -1,4 +1,4 @@
-class Admin::MappingBaseController < AdminController
+class Datajam::Datacard::EngineController < ::AdminController
 
 protected
 

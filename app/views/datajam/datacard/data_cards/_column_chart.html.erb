@@ -1,14 +1,22 @@
 <h4><%= card.title %></h4>
-<div id="data_card_chart" style="position:relative;width:100%;height:400px;">
+<div id="data_card_chart_<%= card.id.to_s %>" class="data_card_chart" style="height:300px;">
   <svg width="100%" height="100%"></svg>
 </div>
+<p><%= raw card.source %></p>
 
 <script type="text/javascript">
   (function($){
+    // Set up data
     var cardData = <%= raw card.prepared_data(:json).to_json %>,
         cardAxes = ['<%=h card.group_by.to_s %>', '<%=h card.series.first.to_s if card.series.length == 1 %>'];
+
+    // Draw chart after dom is loaded and libs are in
     $(function(){
-      require(["/static/javascripts/datajam/datacard/d3-pack.js", "css!/static/stylesheets/datajam/datacard/d3.css"], function(){
+      require([
+        "/static/javascripts/datajam/datacard/d3-pack.js",
+        "css!/static/stylesheets/datajam/datacard/d3.css"
+      ], function(){
+
         nv.addGraph(function(){
           var data = function(){
             var fields = [],
@@ -26,14 +34,13 @@
             return returnData;
           },
           chart = nv.models.multiBarChart();
-          window.cht = chart;
           chart.xAxis
             .staggerLabels(true);
           chart.yAxis
             .tickFormat(d3.format('s'));
-          d3.select('#data_card_chart svg')
+          d3.select('#data_card_chart_<%= card.id.to_s %> svg')
             .datum(data())
-            .transition().duration(200)
+            .transition().duration(100)
             .call(chart);
 
           nv.utils.windowResize(chart.update);

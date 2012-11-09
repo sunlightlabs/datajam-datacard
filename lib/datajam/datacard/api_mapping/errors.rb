@@ -7,6 +7,12 @@ module Datajam
           super "Endpoint #{endpoint_name} is not defined"
         end
       end
+
+      class InvalidRequestError < StandardError
+        def initialize(fields)
+          super "The following field values were not found or invalid: #{fields.join(', ')}"
+        end
+      end
     end
   end
 end

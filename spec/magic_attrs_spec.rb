@@ -1,5 +1,4 @@
 require File.expand_path('../spec_helper', __FILE__)
-require File.expand_path('../fixtures/dummy_magic_attrs', __FILE__)
 
 describe Datajam::Datacard::MagicAttrs do
   subject do

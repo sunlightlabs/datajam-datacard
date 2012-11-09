@@ -19,7 +19,7 @@ module Datajam
 
         # Public: Returns all defined response fields.
         def fields
-          @fields ||= {}
+          @fields ||= Fields.new
         end
 
         # Public: Defines a response field for populating forms and formatting values.
@@ -32,7 +32,7 @@ module Datajam
         # Example
         #
         #   field :amount, :label => "Contribution total" do
-        #     value_reader do |val|
+        #     value_getter do |val|
         #       number_to_currency(val)
         #     end
         #   end
@@ -42,8 +42,27 @@ module Datajam
           fields[name] = OutputField.new(name, options, &block)
         end
 
+        # Public: Defines (once) a filter to run the response text through before
+        # returning it to the MappingData model
+        def before_filter(&block)
+          if block_given?
+            @before_filter ||= Proc.new{|response| block.call response.env[:body] }
+          else
+            @before_filter ||= Proc.new{|response| response.env[:body] }
+          end
+          @before_filter
+        end
+
         protected
 
+      end
+
+      class Fields < Hash
+        # Fields is an extended collection that implements finders.
+        def find_by_label(name)
+          key, field = find { |f| f[1].label == name }
+          field
+        end
       end
     end
   end
