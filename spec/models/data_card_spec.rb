@@ -13,6 +13,15 @@ describe DataCard do
     card.html.should include "<td>Thing 1</td>"
   end
 
+  it "includes all fields when created from csv without a series string" do
+    data = from_csv
+    data.delete(:series_string)
+    card = DataCard.create!(data)
+    card.html.should include "<th>Title</th>"
+    card.html.should include "<th>Text</th>"
+    card.html.should include "<th>Number</th>"
+  end
+
   it "re-renders when edited" do
     card = DataCard.create!(from_csv)
     card.html.should include "<td>Thing 1</td>"

@@ -47,12 +47,13 @@ class DataCard
   validates_associated :data_set, unless: :is_html?
   validates_presence_of :title
   validates_presence_of :group_by, if: :is_graphy?
-  validates_presence_of :series, unless: :is_html?
+  validates_presence_of :series, if: :is_graphy?
   validates_numericality_of :limit, allow_nil: true
   validates_inclusion_of :display_type, in: DataCard.display_types
   validates_inclusion_of :sort_order, in: [:ascending, :descending], allow_nil: true
 
   before_save :cache_tags
+  after_save :set_series_from_csv, if: [:is_table?, :from_csv?]
   after_save :render
   after_save :save_events
   after_destroy :save_events
@@ -145,6 +146,12 @@ class DataCard
       unless row[field].to_s =~ /^[\d\.,]+$/
         errors.add(:series, 'must contain only numeric fields')
       end
+    end
+  end
+
+  def set_series_from_csv
+    if series.nil?
+      self.series = data_set.as_csv[0]
     end
   end
 end
