@@ -30,7 +30,7 @@ class CsvData
   def parse_uploaded_file
     # FIXME: Carrierwave deletion sucks, this probably leaves orphaned db cruft.
     if data_file.present?
-      self.data = data_file.read
+      self.data = data_file.read rescue self.data
     end
     return true
   end
