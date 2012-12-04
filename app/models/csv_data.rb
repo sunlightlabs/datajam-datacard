@@ -19,7 +19,7 @@ class CsvData
     end
     true
   end
-  # after_save :destroy_uploaded_file
+  before_save :destroy_uploaded_file
 
   def data_type
     :csv
@@ -37,5 +37,6 @@ class CsvData
 
   def destroy_uploaded_file
     data_file.remove!
+    self.data_file = nil
   end
 end
