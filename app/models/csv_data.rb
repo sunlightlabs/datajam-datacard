@@ -19,7 +19,7 @@ class CsvData
     end
     true
   end
-  after_save :destroy_uploaded_file
+  # after_save :destroy_uploaded_file
 
   def data_type
     :csv
