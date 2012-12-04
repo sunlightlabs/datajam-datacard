@@ -27,7 +27,7 @@ class Admin::CardsController < AdminController
   def create
     @card = DataCard.new(params[:card])
     load_mappings
-    if @card.has_siblings? && params[:update_data].nil?
+    if @card.has_siblings? && params[:update_data].nil? && @card.from_mapping?
       params[:card].delete(:data_set_attributes)
     end
     if @card.save
@@ -42,7 +42,7 @@ class Admin::CardsController < AdminController
   end
 
   def update
-    params[:card].delete(:data_set_attributes) unless params[:update_data].present?
+    params[:card].delete(:data_set_attributes) unless (params[:update_data].present? && @card.from_mapping?)
     if @card.update_attributes(params[:card])
       flash[:success] = "Card updated."
       redirect_to admin_card_path(@card)

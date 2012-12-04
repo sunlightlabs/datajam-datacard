@@ -19,6 +19,7 @@ class CsvData
     end
     true
   end
+  after_save :destroy_uploaded_file
 
   def data_type
     :csv
@@ -30,10 +31,11 @@ class CsvData
     # FIXME: Carrierwave deletion sucks, this probably leaves orphaned db cruft.
     if data_file.present?
       self.data = data_file.read
-      remove_data_file
-      self.set(:data_file, nil)
     end
     return true
   end
 
+  def destroy_uploaded_file
+    data_file.remove!
+  end
 end
