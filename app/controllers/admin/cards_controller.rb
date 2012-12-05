@@ -35,8 +35,8 @@ class Admin::CardsController < AdminController
       redirect_to admin_card_path(@card)
     else
       cascade_errors(@card, :data_set, :sourced)
-      @mapping = @card.data_set.sourced.mapping
-      @endpoint = @card.data_set.sourced.endpoint
+      @mapping = @card.data_set.sourced.mapping rescue nil
+      @endpoint = @card.data_set.sourced.endpoint rescue nil
       render 'new'
     end
   end
