@@ -42,7 +42,7 @@ class Admin::CardsController < AdminController
   end
 
   def update
-    params[:card].delete(:data_set_attributes) unless (params[:update_data].present? && @card.from_mapping?)
+    params[:card].delete(:data_set_attributes) if params[:update_data].nil? && @card.from_mapping?
     if @card.update_attributes(params[:card])
       flash[:success] = "Card updated."
       redirect_to admin_card_path(@card)
