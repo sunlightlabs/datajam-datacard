@@ -55,8 +55,8 @@ class DataCard
   before_save :cache_tags
   after_save :set_series_from_csv, if: [:is_table?, :from_csv?]
   after_save :render
-  after_save :save_events
-  after_destroy :save_events
+  after_save :save_upcoming_events
+  after_destroy :save_upcoming_events
 
   alias_method :_source, :source
 
@@ -138,6 +138,10 @@ class DataCard
 
   def save_events
     Event.all.each(&:save)
+  end
+
+  def save_upcoming_events
+    Event.where(status: "Upcoming").each(&:save)
   end
 
   def ensure_series_values_are_numeric
